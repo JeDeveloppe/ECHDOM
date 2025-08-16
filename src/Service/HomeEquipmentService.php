@@ -8,13 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HomeEquipmentService
 {
-    private EntityManagerInterface $entityManager;
-    private HomeEquipmentRepository $homeEquipmentRepository;
-
-    public function __construct(EntityManagerInterface $entityManager, HomeEquipmentRepository $homeEquipmentRepository)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private HomeEquipmentRepository $homeEquipmentRepository
+    )
     {
-        $this->entityManager = $entityManager;
-        $this->homeEquipmentRepository = $homeEquipmentRepository;
     }
 
     /**
@@ -42,7 +40,7 @@ class HomeEquipmentService
             // Ajoutez d'autres équipements ici
         ];
 
-        $io->note('Initialisation des règles...');
+        $io->note('Initialisation des équipements de maison...');
         $io->progressStart(count($equipmentList));
 
         foreach ($equipmentList as $equipmentData) {

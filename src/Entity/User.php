@@ -68,10 +68,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'owner')]
     private Collection $homes;
 
+    /**
+     * @var Collection<int, Exchange>
+     */
+    #[ORM\OneToMany(targetEntity: Exchange::class, mappedBy: 'proposer')]
+    private Collection $exchangesProposed;
+
+    /**
+     * @var Collection<int, Exchange>
+     */
+    #[ORM\OneToMany(targetEntity: Exchange::class, mappedBy: 'receiver')]
+    private Collection $exchangesReceiver;
+
+    #[ORM\OneToOne(mappedBy: 'rater', cascade: ['persist', 'remove'])]
+    private ?Notation $notationRater = null;
+
+    #[ORM\OneToOne(mappedBy: 'ratedUser', cascade: ['persist', 'remove'])]
+    private ?Notation $notationRated = null;
+
     public function __construct()
     {
         $this->workplaces = new ArrayCollection();
         $this->homes = new ArrayCollection();
+        $this->exchangesProposed = new ArrayCollection();
+        $this->exchangesReceiver = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -295,6 +315,100 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $home->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exchange>
+     */
+    public function getExchangesProposed(): Collection
+    {
+        return $this->exchangesProposed;
+    }
+
+    public function addExchangesProposed(Exchange $exchangesProposed): static
+    {
+        if (!$this->exchangesProposed->contains($exchangesProposed)) {
+            $this->exchangesProposed->add($exchangesProposed);
+            $exchangesProposed->setProposer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExchangesProposed(Exchange $exchangesProposed): static
+    {
+        if ($this->exchangesProposed->removeElement($exchangesProposed)) {
+            // set the owning side to null (unless already changed)
+            if ($exchangesProposed->getProposer() === $this) {
+                $exchangesProposed->setProposer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exchange>
+     */
+    public function getExchangesReceiver(): Collection
+    {
+        return $this->exchangesReceiver;
+    }
+
+    public function addExchangesReceiver(Exchange $exchangesReceiver): static
+    {
+        if (!$this->exchangesReceiver->contains($exchangesReceiver)) {
+            $this->exchangesReceiver->add($exchangesReceiver);
+            $exchangesReceiver->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExchangesReceiver(Exchange $exchangesReceiver): static
+    {
+        if ($this->exchangesReceiver->removeElement($exchangesReceiver)) {
+            // set the owning side to null (unless already changed)
+            if ($exchangesReceiver->getReceiver() === $this) {
+                $exchangesReceiver->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getNotationRater(): ?Notation
+    {
+        return $this->notationRater;
+    }
+
+    public function setNotationRater(Notation $notationRater): static
+    {
+        // set the owning side of the relation if necessary
+        if ($notationRater->getRater() !== $this) {
+            $notationRater->setRater($this);
+        }
+
+        $this->notationRater = $notationRater;
+
+        return $this;
+    }
+
+    public function getNotationRated(): ?Notation
+    {
+        return $this->notationRated;
+    }
+
+    public function setNotationRated(Notation $notationRated): static
+    {
+        // set the owning side of the relation if necessary
+        if ($notationRated->getRatedUser() !== $this) {
+            $notationRated->setRatedUser($this);
+        }
+
+        $this->notationRated = $notationRated;
 
         return $this;
     }

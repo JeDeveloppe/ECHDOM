@@ -8,13 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HomeRegulationsAndRestrictionsService
 {
-    private EntityManagerInterface $entityManager;
-    private HomeRegulationsAndRestrictionsRepository $homeRegulationsAndRestrictionsRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, HomeRegulationsAndRestrictionsRepository $homeRegulationsAndRestrictionsRepository)
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private HomeRegulationsAndRestrictionsRepository $homeRegulationsAndRestrictionsRepository
+    )
     {
-        $this->entityManager = $entityManager;
-        $this->homeRegulationsAndRestrictionsRepository = $homeRegulationsAndRestrictionsRepository;
     }
 
     /**
@@ -29,15 +28,15 @@ class HomeRegulationsAndRestrictionsService
             "Utilisation de la piscine uniquement entre 8h et 20h",
         ];
 
-        $io->note('Initialisation des règles...');
+        $io->note('Initialisation des règles et restrictions de maison...');
         $io->progressStart(count($homeRegulationsAndRestrictionsList));
 
         foreach ($homeRegulationsAndRestrictionsList as $regulationData) {
-            $existingRegulation = $this->homeRegulationsAndRestrictionsRepository->findOneBy(['name' => $regulationData['name']]);
+            $existingRegulation = $this->homeRegulationsAndRestrictionsRepository->findOneBy(['name' => $regulationData]);
 
             if (!$existingRegulation) {
                 $newRegulation = new HomeRegulationsAndRestrictions();
-                $newRegulation->setName($regulationData['name']);
+                $newRegulation->setName($regulationData);
                 $this->entityManager->persist($newRegulation);
             }
             $io->progressAdvance();
