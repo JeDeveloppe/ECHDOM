@@ -22,7 +22,7 @@ class HomeEquipmentService
      * @param array $equipmentList La liste des équipements à créer. Chaque élément
      * doit être un tableau avec les clés 'name' et 'logo'.
      */
-    public function initializeHomeEquipments($io): void
+    public function initialize(): void
     {
         // Liste des équipements à créer
         $equipmentList = [
@@ -40,9 +40,6 @@ class HomeEquipmentService
             // Ajoutez d'autres équipements ici
         ];
 
-        $io->note('Initialisation des équipements de maison...');
-        $io->progressStart(count($equipmentList));
-
         foreach ($equipmentList as $equipmentData) {
             // Vérifie si l'équipement existe déjà dans la base de données
             $existingEquipment = $this->homeEquipmentRepository->findOneBy(['name' => $equipmentData['name']]);
@@ -55,7 +52,6 @@ class HomeEquipmentService
 
                 $this->entityManager->persist($newEquipment);
             }
-            $io->progressAdvance();
         }
 
         // Exécute les requêtes pour sauvegarder les nouveaux équipements

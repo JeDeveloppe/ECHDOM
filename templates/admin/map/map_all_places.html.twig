@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ h1 }}</h1>
+   
+    <div class="col-md-6">
+        {# The map must have a defined height #}
+        {{ ux_map(map, {style: 'height: 600px;'}) }}
+    </div>
+{% endblock %}

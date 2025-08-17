@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\ExchangeStatusService;
+use App\Service\FloorLevelService;
 use App\Service\HomeEquipmentService;
 use App\Service\HomeRegulationsAndRestrictionsService;
 use App\Service\HomeTypeService;
@@ -25,6 +26,7 @@ class InitApp extends Command
         private ExchangeStatusService $exchangeStatusService,
         private NotationCriteriaService $notationCriteriaService,
         private HomeTypeService $homeTypeService,
+        private FloorLevelService $floorLevelService, // <-- Ajout du service FloorLevelService
     )
     {
          parent::__construct();
@@ -35,11 +37,29 @@ class InitApp extends Command
         $io = new SymfonyStyle($input, $output);
 
         // Appelle le service pour initialiser la base de données
-        $this->homeEquipmentService->initializeHomeEquipments($io);
-        $this->homeRegulationsAndRestrictionsService->initializeHomeRegulationsAndRestrictions($io);
-        $this->exchangeStatusService->initializeExchangeStatus($io);
-        $this->notationCriteriaService->initializeNotationCriterias($io);
-        $this->homeTypeService->initializeNotationCriterias($io);
+        $io->section('Initialisation des équipements de maison');
+        $this->homeEquipmentService->initialize();
+        $io->success('Initialisation des équipements de maison terminée avec succès.');
+
+        $io->section('Initialisation des règles et restrictions de maison');
+        $this->homeRegulationsAndRestrictionsService->initialize();
+        $io->success('Initialisation des règles et restrictions de maison terminée avec succès.');
+
+        $io->section('Initialisation des status d\'échange');
+        $this->exchangeStatusService->initialize();
+        $io->success('Initialisation des status d\'échange terminée avec succès.');
+
+        $io->section('Initialisation des critères de notation');
+        $this->notationCriteriaService->initialize();
+        $io->success('Initialisation des critères de notation terminée avec succès.');
+
+        $io->section('Initialisation des types de maison');
+        $this->homeTypeService->initialize();
+        $io->success('Initialisation des types de maison terminée avec succès.');
+
+        $io->section('Initialisation des niveaux de sol');
+        $this->floorLevelService->initialize(); // <-- Appel de la méthode pour initialiser les niveaux de sol
+        $io->success('Initialisation des niveaux de sol terminée avec succès.');
 
         $io->success('Iniatialisation fait avec succès.');
 
