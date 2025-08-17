@@ -19,7 +19,7 @@ class NotationCriteriaService
     {
     }
 
-    public function initializeNotationCriterias($io): void
+    public function initialize(): void
     {
         // Liste des équipements à créer
         $exchangeLists = [
@@ -27,9 +27,6 @@ class NotationCriteriaService
             "Propreté",
             "Accessibilité",
         ];
-
-        $io->note('Initialisation des règles...');
-        $io->progressStart(count($exchangeLists));
 
         foreach ($exchangeLists as $equipmentData) {
             // Vérifie si l'équipement existe déjà dans la base de données
@@ -42,7 +39,6 @@ class NotationCriteriaService
 
                 $this->entityManager->persist($newEquipment);
             }
-            $io->progressAdvance();
         }
 
         // Exécute les requêtes pour sauvegarder les nouveaux équipements

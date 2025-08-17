@@ -19,7 +19,7 @@ class HomeRegulationsAndRestrictionsService
     /**
      * Crée les règles de maison de base si elles n'existent pas déjà.
      */
-    public function initializeHomeRegulationsAndRestrictions($io): void
+    public function initialize(): void
     {
         $homeRegulationsAndRestrictionsList = [
             "Animaux domestiques autorisés",
@@ -27,9 +27,6 @@ class HomeRegulationsAndRestrictionsService
             "Heures de silence de 22h à 7h",
             "Utilisation de la piscine uniquement entre 8h et 20h",
         ];
-
-        $io->note('Initialisation des règles et restrictions de maison...');
-        $io->progressStart(count($homeRegulationsAndRestrictionsList));
 
         foreach ($homeRegulationsAndRestrictionsList as $regulationData) {
             $existingRegulation = $this->homeRegulationsAndRestrictionsRepository->findOneBy(['name' => $regulationData]);
@@ -39,7 +36,7 @@ class HomeRegulationsAndRestrictionsService
                 $newRegulation->setName($regulationData);
                 $this->entityManager->persist($newRegulation);
             }
-            $io->progressAdvance();
+
         }
 
         $this->entityManager->flush();

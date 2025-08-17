@@ -17,7 +17,7 @@ class ExchangeStatusService
     {
     }
 
-    public function initializeExchangeStatus($io): void
+    public function initialize(): void
     {
         // Liste des équipements à créer
         $exchangeLists = [
@@ -28,9 +28,6 @@ class ExchangeStatusService
             "Échange annulé",
             "Échange en attente de confirmation",
         ];
-
-        $io->note('Initialisation des status d\'échange...');
-        $io->progressStart(count($exchangeLists));
 
         foreach ($exchangeLists as $equipmentData) {
             // Vérifie si l'équipement existe déjà dans la base de données
@@ -43,7 +40,6 @@ class ExchangeStatusService
 
                 $this->entityManager->persist($newEquipment);
             }
-            $io->progressAdvance();
         }
 
         // Exécute les requêtes pour sauvegarder les nouveaux équipements
