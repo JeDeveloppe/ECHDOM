@@ -34,7 +34,9 @@
 
         {% include "site/_nav.html.twig" %}
 
-        {% block body %}{% endblock %}
+        <div class="container-fluid">
+            {% block body %}{% endblock %}
+        </div>
 
         {% include "site/_footer.html.twig" %}
     </body>

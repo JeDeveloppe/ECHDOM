@@ -24,7 +24,7 @@ class HomeRepository extends ServiceEntityRepository
      * @param int $distanceKm Distance en kilomètres.
      * @return Home[]
      */
-    public function findHomesNearWorkplace(Workplace $workplace, int $distanceKm = 10): array
+    public function findHomesNearWorkplace(Workplace $workplace, int $distanceKm = 20): array
     {
         
         $longitude = $workplace->getLongitude();

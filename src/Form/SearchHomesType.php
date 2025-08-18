@@ -11,6 +11,9 @@ class SearchHomesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        //?on ajoute l'option pour le temps de trajet entre la maison et le lieu de travail
+        $timeBetweenmMyHomeAndMyWorkplace = $options['timeBetweenmMyHomeAndMyWorkplace'];
+
         $builder
             ->add('duration', RangeType::class, [
                 'label' => 'Durée du trajet:',
@@ -18,8 +21,9 @@ class SearchHomesType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Entrez la durée en minutes',
                     'min' => 10,
-                    'max' => 60,
-                    'step' => 5,
+                    // 'max' => round($timeBetweenmMyHomeAndMyWorkplace / 2),//TODO: on pourrait mettre une valeur par défaut
+                    'max' => $timeBetweenmMyHomeAndMyWorkplace ,
+                    'step' => 1,
                     'value' => 10, // Valeur par défaut
                     'class' => 'form-range',
                 ],
@@ -28,22 +32,6 @@ class SearchHomesType extends AbstractType
                 ],
                 'help' => 'Durée maximale choisie: 10 minutes',
             ])
-            ->add('distance', RangeType::class, [
-                'label' => 'Distance à vol d\'oiseau:',
-                'required' => true,
-                'attr' => [
-                    'placeholder' => 'Entrez la distance en kilomètre à vol d\'oiseau',
-                    'min' => 2,
-                    'max' => 50,
-                    'step' => 1,
-                    'value' => 15, // Valeur par défaut
-                    'class' => 'form-range',
-                ],
-                'help_attr' => [
-                    'class' => 'form-text',
-                ],
-                'help' => 'Distance maximale choisie: 15 kilomètres',
-            ])
         ;
     }
 
@@ -51,6 +39,7 @@ class SearchHomesType extends AbstractType
     {
         $resolver->setDefaults([
             // Configure your form options here
+            'timeBetweenmMyHomeAndMyWorkplace' => null, // Option pour le
         ]);
     }
 }

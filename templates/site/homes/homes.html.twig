@@ -1,138 +1,290 @@
 {% extends 'site/base.html.twig' %}
 
-{% block title %}Hello SiteController!{% endblock %}
+{% block title %}Trouve ton logement idéal - ECHDOM{% endblock %}
 
-{% block body %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
     <style>
-        #loader-container {
+        body {
+            background: #f8f9fa;
+        }
+        .card-home {
+            border-radius: 1rem;
+            border: none;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.10);
+            transition: box-shadow 0.2s;
+        }
+        .card-home:hover {
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.22);
+            border: 1px solid #3498db;
+        }
+        .card-header {
+            height: 54px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, #e3f2fd 60%, #fff 100%);
+            border-bottom: none;
+            border-radius: 1rem 1rem 0 0;
+            overflow: hidden;
+        }
+        .card-header h5 {
+            margin-bottom: 0;
+            font-size: 1.05rem;
+            flex: 1 1 auto;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            text-overflow: ellipsis;
+        }
+        .equipments-list span {
+            margin-right: 6px;
+            margin-bottom: 3px;
+        }
+        .img-placeholder {
+            background: #e3f2fd;
+            color: #3498db;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            min-height: 140px;
+            margin-bottom: 1rem;
+        }
+        .loader-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(255,255,255,0.85);
             z-index: 9999;
-            font-family: Arial, sans-serif;
-        }
-
-        #loader-content {
-            display: flex;
-            flex-direction: column;
+            display: none;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            flex-direction: column;
         }
-        
-        #loader {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loader-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        #loader-details {
-            margin-top: 10px;
-            color: #555;
-        }
-        
-        #loader-distance, #loader-duration {
-            font-weight: bold;
+        @media(max-width: 576px) {
+            .card-header {
+                height: auto;
+                min-height: 48px;
+            }
         }
     </style>
-    <div id="loader-container" style="display: none;">
-        <div id="loader-content">
-            <p id="loader"></p>
-            <p id="loader-text">Recherche en cours...</p>
-            <div id="loader-details">
-                <span id="loader-distance"></span>
-                <span id="loader-duration"></span>
+{% endblock %}
+
+{% block body %}
+<div class="loader-overlay" id="loader-overlay">
+    <div class="text-center">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Recherche en cours...</span>
+        </div>
+        <div class="fw-bold mb-1">Recherche en cours...</div>
+        <div class="text-muted">Merci de patienter, nous sélectionnons les meilleurs logements pour vous.</div>
+    </div>
+</div>
+
+<div class="container my-4">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm rounded-4 border-0">
+                <div class="card-header bg-primary text-white">
+                    <span class="fw-bold">Critères de recherche</span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Votre lieu de travail :</strong><br>
+                            {% for workplace in app.user.workplaces %}
+                                <span class="badge bg-info text-dark mb-1">{{ workplace.address }}</span>
+                            {% else %}
+                                <span class="text-muted">Aucun lieu renseigné</span>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Temps de trajet actuel :</strong>
+                            <span class="badge bg-primary bg-opacity-75">{{ timeBetweenmMyHomeAndMyWorkplace }} min.</span>
+                        </div>
+                    </div>
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="form_duration" class="form-label">Durée max (min)</label>
+                            <div class="d-flex align-items-center gap-2">
+                                {{ form_widget(form.duration, {'attr': {'oninput': 'updateDurationValue(this.value)', 'id': 'form_duration'}}) }}
+                                <span id="durationValue" class="fw-bold text-primary ms-2">{{ form.duration.vars.value }}</span>
+                            </div>
+                            {{ form_errors(form.duration) }}
+                        </div>
+                        {% if form.distance is defined %}
+                        <div class="col-md-6 mb-3">
+                            <label for="form_distance" class="form-label">Distance max (km)</label>
+                            <div class="d-flex align-items-center gap-2">
+                                {{ form_widget(form.distance, {'attr': {'oninput': 'updateDistanceValue(this.value)', 'id': 'form_distance'}}) }}
+                                <span id="distanceValue" class="fw-bold text-primary ms-2">{{ form.distance.vars.value }}</span>
+                            </div>
+                            {{ form_errors(form.distance) }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type="submit" id="submitButton" class="btn btn-primary rounded-pill px-5">
+                                <i class="bi bi-search"></i> Rechercher
+                            </button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
             </div>
         </div>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Votre lieu de travail</div>
-                <div class="card-body">
-                {% for workplace in app.user.workplaces %}
-                    {{ workplace.address }}
-                {% endfor %}
+
+    {% if homes|length > 0 %}
+        <div class="row g-4">
+            {% for home in homes %}
+                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 d-flex">
+                    <div class="card card-home flex-fill h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-primary">
+                                {% if home.address is defined %}
+                                    {{ home.address }}
+                                {% else %}
+                                    Adresse inconnue
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-body pb-2">
+                            {% if home.timeTravelBetweenHomeAndWorkplace is defined and home.timeTravelBetweenHomeAndWorkplace %}
+                                <div class="col-12 text-end mb-2">
+                                    <span class="badge bg-success rounded-pill">Temps de trajet : {{ home.timeTravelBetweenHomeAndWorkplace }} min</span>
+                                </div>
+                            {% endif %}
+                            {% if home.photos is defined and home.photos|length > 0 %}
+                                <div id="carouselHome{{ loop.index }}" class="carousel slide mb-2" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for photo in home.photos %}
+                                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                                <img src="{{ photo }}" class="d-block w-100 rounded" style="max-height:140px;object-fit:cover;" alt="Photo logement">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if home.photos|length > 1 %}
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselHome{{ loop.index }}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                            <span class="visually-hidden">Précédent</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselHome{{ loop.index }}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                            <span class="visually-hidden">Suivant</span>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="img-placeholder">
+                                    <i class="bi bi-house-heart"></i>
+                                </div>
+                            {% endif %}
+                            <div class="mb-2">
+                                <strong>Équipements :</strong>
+                                <div class="equipments-list mt-1">
+                                    {% if home.equipments is defined and home.equipments|length > 0 %}
+                                        {% for equipment in home.equipments %}
+                                            {% if equipment.name is defined %}
+                                                <span class="badge bg-info text-dark rounded-pill">{{ equipment.name }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">Aucun équipement</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if home.price is defined and home.price %}
+                                <div class="mb-1">
+                                    <span class="badge bg-success rounded-pill">Prix : {{ home.price|number_format(0, ',', ' ') }} €</span>
+                                </div>
+                            {% endif %}
+                            <a href="#"
+                               class="btn btn-outline-primary rounded-pill mt-2"
+                               onclick="showHomeDetails('{{ home.id is defined ? home.id : '' }}');return false;">
+                                <i class="bi bi-info-circle"></i> Voir plus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 text-center">
+                <div class="alert alert-warning rounded-pill">
+                    <i class="bi bi-emoji-smile"></i> Aucun lieu disponible pour le moment. Revenez bientôt !
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Critères de recherche</div>
-                <div class="card-body">
-                    {{ form_start(form)}}
-                       <div class="my-custom-class-for-errors">
-                            {{ form_errors(form) }}
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.duration) }}
-                            </div>
-                            <div class="col" id="some-custom-id">
-                                {{ form_row(form.distance) }}
-                            </div>
-                            <div class="col-12 d-flex justify-content-center mt-3">
-                                <button type="submit" id="submitButton" class="btn btn-primary">Rechercher</button>
-                            </div>
-                        </div>
-                    {{ form_end(form)}}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
+    {% endif %}
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-10">
             {% if map is not null %}
-                {{ ux_map(map, {style: 'height: 600px;'}) }}
+                <div class="rounded-4 shadow-sm overflow-hidden" style="height: 400px;">
+                    {{ ux_map(map, {style: 'height: 100%; width: 100%'}) }}
+                </div>
             {% else %}
-            <p>Aucun lieu disponible pour le moment.</p>
+                <div class="alert alert-info text-center rounded-pill">Aucune carte disponible.</div>
             {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}
+
 {% block javascripts %}
-    {{ parent() }} {# Important pour ne pas écraser les autres scripts de la page de base #}
-
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const rangeDurationInput = document.getElementById('search_homes_duration');
-            const rangeDurationValueDisplay = document.getElementById('search_homes_duration_help');
-            const rangeDistanceInput = document.getElementById('search_homes_distance');
-            const rangeDistanceValueDisplay = document.getElementById('search_homes_distance_help');
+        function updateDurationValue(val) {
+            document.getElementById('durationValue').textContent = val;
+        }
+        function updateDistanceValue(val) {
+            document.getElementById('distanceValue').textContent = val;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Range initial values
+            var durationInput = document.getElementById('form_duration');
+            var durationValue = document.getElementById('durationValue');
+            if(durationInput && durationValue) {
+                durationValue.textContent = durationInput.value;
+                durationInput.addEventListener('input', function() {
+                    durationValue.textContent = durationInput.value;
+                });
+            }
+            var distanceInput = document.getElementById('form_distance');
+            var distanceValue = document.getElementById('distanceValue');
+            if(distanceInput && distanceValue) {
+                distanceValue.textContent = distanceInput.value;
+                distanceInput.addEventListener('input', function() {
+                    distanceValue.textContent = distanceInput.value;
+                });
+            }
+
+            // Loader on submit
             const submitButton = document.getElementById('submitButton');
-            const loaderContainer = document.getElementById('loader-container');
-
-            rangeDurationInput.addEventListener('input', (event) => {
-                rangeDurationValueDisplay.textContent = 'Durée maximale choisie: '+event.target.value+' minutes';
-            });
-            rangeDistanceInput.addEventListener('input', (event) => {
-                rangeDistanceValueDisplay.textContent = 'Distance maximale choisie: '+event.target.value+' kilomètres';
-            });
-
-            submitButton.addEventListener('click', () => {
-                loaderContainer.style.display = 'flex';
-            });
+            const loaderOverlay = document.getElementById('loader-overlay');
+            if (submitButton && loaderOverlay) {
+                submitButton.addEventListener('click', function () {
+                    loaderOverlay.style.display = 'flex';
+                    setTimeout(function () {
+                        loaderOverlay.style.display = 'none';
+                    }, 1500);
+                });
+            }
         });
 
+        function showHomeDetails(homeId) {
+            // Remplace par un affichage modal ou une navigation
+            alert("Détails du logement ID : " + homeId);
+        }
     </script>
 {% endblock %}

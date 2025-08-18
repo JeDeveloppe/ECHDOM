@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HomeRepository::class)]
-class Home
+class Home implements GeolocatableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -52,6 +52,8 @@ class Home
 
     #[ORM\Column]
     private ?bool $hasBalcony = null;
+
+    private ?int $timeTravelBetweenHomeAndWorkplace = null; // Ajout d'une propriété pour le temps de trajet
 
     /**
      * @var Collection<int, Photo>
@@ -332,6 +334,17 @@ class Home
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getTimeTravelBetweenHomeAndWorkplace(): ?int
+    {
+        return $this->timeTravelBetweenHomeAndWorkplace;
+    }
+    public function setTimeTravelBetweenHomeAndWorkplace(?int $timeTravel): static
+    {
+        $this->timeTravelBetweenHomeAndWorkplace = $timeTravel;
 
         return $this;
     }

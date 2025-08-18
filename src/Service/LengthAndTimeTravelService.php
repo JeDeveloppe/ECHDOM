@@ -43,13 +43,14 @@ class LengthAndTimeTravelService
 
         $validHomes = [];
 
-        // 2. Deuxième étape: filtrage par temps de trajet via une API externe.
+        //2. Deuxième étape: filtrage par temps de trajet via une API externe.
         foreach ($nearbyHomes as $i => $home) {
 
             $travelTime = $this->getDistancesBeetweenTwoGpsPoints($home, $workplace);
 
             // Vérifie si le temps de trajet est valide et en dessous de la limite.
             if ($travelTime !== null && $travelTime <= $maxTravelTimeMinutes) {
+                $home->setTimeTravelBetweenHomeAndWorkplace($travelTime);// Ajoute le temps de trajet à l'objet Home
                 $validHomes[] = $home;
             }
             //?on ralenti les requêtes pour éviter de surcharger l'API
@@ -57,6 +58,7 @@ class LengthAndTimeTravelService
                 sleep(1);
             }
         }
+        // return $nearbyHomes;
 
         return $validHomes;
     }
@@ -70,7 +72,6 @@ class LengthAndTimeTravelService
         );
 
         $array_reponse = $response->toArray();
-        dump($array_reponse);
 
         $duration = $array_reponse['routes'][0]['summary']['travelTimeInSeconds'];
         

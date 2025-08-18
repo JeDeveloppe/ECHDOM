@@ -18,16 +18,13 @@ final class HomeController extends AbstractController
         private  LengthAndTimeTravelService $lengthAndTimeTravelService,
         private Security $security,
         private MapsService $mapsService,
+        private HomeRepository $homeRepository
     )
     {
     }
     #[Route('/homes', name: 'app_homes')]
     public function searchHomes(Request $request): Response
     {
-        //?on va ajouter le formulaire de recherche de maisons
-        $form = $this->createForm(SearchHomesType::class);
-        $form->handleRequest($request);
-
 
         $user = $this->security->getUser();
         if (!$user) {
@@ -41,15 +38,25 @@ final class HomeController extends AbstractController
             return $this->redirectToRoute('app_accueil');
         }
 
+        //?on calcule le temps de trajet entre le lieu de travail et la maison de l'utilisateur
+        $timeBetweenmMyHomeAndMyWorkplace = $this->lengthAndTimeTravelService->getDistancesBeetweenTwoGpsPoints(
+            $user->getHomes()->first(),
+            $workplaces->first()
+        );
+
+        //?on va ajouter le formulaire de recherche de maisons
+        $form = $this->createForm(SearchHomesType::class, null, [
+            'timeBetweenmMyHomeAndMyWorkplace' => $timeBetweenmMyHomeAndMyWorkplace,
+        ]);
+        $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()){
             //?on récupère les données du formulaire
             $datas = $form->getData();
             $duration = $datas['duration'];
-            $distance = $datas['distance'];
 
             //?on récupère les maisons à proximité du lieu de travail
-            $homes = $this->lengthAndTimeTravelService->findNearbyHomesByTravelTime($workplaces->first(), $duration, $distance);
-            dump($homes);
+            $homes = $this->lengthAndTimeTravelService->findNearbyHomesByTravelTime($workplaces->first(), $duration, $distance = 20);
         }
 
         if(empty($homes)) {
@@ -59,14 +66,16 @@ final class HomeController extends AbstractController
 
             $map = $this->mapsService->generateMapWithAllDatabaseObjects($homes, 'homes');
             //?on ajoute le lieu de résidence de l'utilisateur à la carte
-            $map = $this->mapsService->addHomeMarkerFromUserToMap($map, $user->getHomes()->first(), 'homes');
+            $map = $this->mapsService->addMarkerToMap($map, $user->getHomes()->first(), 'homes', 'warning');
+            //?on ajoute le lieu de travail de l'utilisateur à la carte
+            $map = $this->mapsService->addMarkerToMap($map, $user->getWorkplaces()->first(), 'workplaces', 'danger');
 
         }
-
 
         return $this->render('site/homes/homes.html.twig', [
             'map' => $map,
             'homes' => $homes,
+            'timeBetweenmMyHomeAndMyWorkplace' => $timeBetweenmMyHomeAndMyWorkplace,
             'form' => $form->createView(),
             'disable_turbo' => true, // Désactive Turbo pour cette page
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\GeolocatableInterface;
 use App\Entity\Home;
 use App\Entity\HomeType;
 use Dom\Entity;
@@ -56,15 +57,16 @@ class MapsService
      * @param Map $map La carte à laquelle ajouter le marqueur.
      * @param Home $home L'entité contenant les informations du marqueur.
      * @param string $typeOfPlace Type de lieu (par exemple, "workplaces, users").
+     * @param ?string $color Couleur de l'icône (optionnel).
      * @return Map
      */
-    public function addHomeMarkerFromUserToMap(Map $map, Home $home, string $typOfPlace): Map
+    public function addMarkerToMap(Map $map, GeolocatableInterface $geolocatable, string $typOfPlace, ?string $color = null): Map
     {
-        $icon = $this->getIconByType($typOfPlace, 'danger');
+        $icon = $this->getIconByType($typOfPlace, $color);
 
-        $latitude = $home->getLatitude();
-        $longitude = $home->getLongitude();
-        $address = $home->getAddress();
+        $latitude = $geolocatable->getLatitude();
+        $longitude = $geolocatable->getLongitude();
+        $address = $geolocatable->getAddress();
 
         $map->addMarker(new Marker(
             position: new Point($latitude, $longitude),
@@ -82,39 +84,39 @@ class MapsService
      * Retourne l'icône appropriée en fonction du type de lieu.
      *
      * @param string $typeOfPlace Le type de lieu (par exemple, "workplaces, homes").
-     * @param string $color Couleur de l'icône (optionnel).
+     * @param ?string $color Couleur de l'icône (optionnel).
      * @return Icon
      */
-    private function getIconByType(string $typeOfPlace, string $color): Icon
+    private function getIconByType(string $typeOfPlace, ?string $color = null): Icon
     {
-        // On initialise les options de l'icône
         $options = [
             'width' => 24,
             'height' => 24,
         ];
 
-        // Si une couleur est passée, on l'ajoute comme classe CSS
-        if ($color) {
-            $options['class'] = $color;
+        if ($color !== null) {
+            // Bootstrap colors: primary, success, danger, warning, info, etc.
+            if (in_array($color, ['primary', 'success', 'danger', 'warning', 'info', 'secondary', 'dark', 'light', 'muted', 'white'])) {
+                $options['class'] = 'text-' . $color;
+            } else {
+                // Custom CSS color
+                $options['style'] = 'color: ' . $color . ';';
+            }
+        } else {
+            $options['class'] = 'text-primary';
         }
 
         switch ($typeOfPlace) {
             case 'workplaces':
-                $icon = Icon::ux('vaadin:workplace', $options);
-                break;
+                return Icon::ux('vaadin:workplace', $options);
             case 'homes':
-                $icon = Icon::ux('fa:home', $options);
-                break;
+                return Icon::ux('fa:home', $options);
             default:
-                $icon = Icon::ux('carbon:unknown-filled', [
+                return Icon::ux('carbon:unknown-filled', array_merge($options, [
                     'width' => 8,
                     'height' => 8,
-                    'class' => $options['class'] ?? '',
-                ]);
-                break;
+                ]));
         }
-
-        return $icon;
     }
 
 }
