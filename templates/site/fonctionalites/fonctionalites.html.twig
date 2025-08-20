@@ -1,0 +1,103 @@
+{# templates/features/index.html.twig #}
+
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Fonctionnalités{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <!-- Section des Fonctionnalités -->
+    <section id="features" class="features-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">Fonctionnalités</h1>
+            <p class="lead text-muted mb-5">Découvrez comment WORKaway rend votre quotidien plus simple, plus flexible et plus gratifiant.</p>
+
+            <div class="features-row">
+                <!-- Carte Fonctionnalité 1: Recherche intuitive -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-search-location feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Recherche Intelligente</h5>
+                                <p class="card-text text-muted my-0">Trouvez des logements à proximité de votre lieu de travail, en filtrant par type de domicile, équipements et plus encore.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 2: Profils complets -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-check feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Profils Vérifiés</h5>
+                                <p class="card-text text-muted my-0">Consultez des profils d'utilisateurs détaillés avec des notes et des avis pour garantir la confiance et la sécurité des échanges.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 3: Messagerie sécurisée -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-comments feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Messagerie Intégrée</h5>
+                                <p class="card-text text-muted my-0">Communiquez en toute sécurité avec les autres membres pour organiser les détails de votre échange, sans avoir à partager d'informations personnelles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 4: Évaluations mutuelles -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-star-half-alt feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Système d'Évaluation</h5>
+                                <p class="card-text text-muted my-0">Laissez et recevez des notes sur la propreté, la communication et la fiabilité pour bâtir une communauté transparente et fiable.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 5: Gestion des échanges -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-tasks feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Gestion Simplifiée</h5>
+                                <p class="card-text text-muted my-0">Un tableau de bord intuitif pour suivre vos demandes d'échange, vos messages et gérer vos annonces en un seul endroit.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carte Fonctionnalité 6: Support client -->
+                <div class="feature-col">
+                    <div class="card card-feature h-100 shadow-sm p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-headset feature-icon me-4"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Support Dédié</h5>
+                                <p class="card-text text-muted my-0">Notre équipe est à votre disposition pour répondre à toutes vos questions et vous accompagner à chaque étape de votre échange.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Appel à l'action -->
+    {% include "site/components/_call_to_subscribe.twig" %}
+{% endblock %}
+

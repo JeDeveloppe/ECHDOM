@@ -1,0 +1,120 @@
+{# templates/gains/index.html.twig #}
+
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Gagnez plus que de l'argent{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <!-- Section Gains Réels -->
+    <section id="gains" class="gains-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">Gagnez plus que de l'argent</h1>
+            <p class="lead text-muted mb-5">WORKaway vous aide à transformer votre quotidien en vous offrant des bénéfices concrets qui vont bien au-delà de la simple économie financière.</p>
+
+            <div class="row features-row">
+                <!-- Carte Gain 1: Temps -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-clock gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Jusqu'à 15h gagnées</h3>
+                                <p class="gains-card-subtitle my-0">par semaine</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Fini les heures perdues dans les embouteillages. Ce temps précieux vous appartient désormais : profitez-en pour vos passions, votre famille ou simplement pour vous reposer.</p>
+                        <small class="text-muted mt-3">Basé sur une moyenne de 1h30 de trajet aller-retour par jour, 5 jours par semaine.</small>
+                    </div>
+                </div>
+
+                <!-- Carte Gain 2: Argent -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-euro-sign gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Jusqu'à 200€ économisés</h3>
+                                <p class="gains-card-subtitle my-0">par mois</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Réduisez considérablement vos dépenses liées aux trajets domicile-travail. Économisez sur le carburant, l'entretien du véhicule ou les abonnements de transport en commun.</p>
+                        <small class="text-muted mt-3">Basé sur une moyenne de 50km de trajet aller-retour par jour, 5 jours par semaine.</small>
+                    </div>
+                </div>
+
+                <!-- Carte Gain 3: Bien-être -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-heart gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Retrouvez la sérénité</h3>
+                                <p class="gains-card-subtitle my-0">pour votre quotidien</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Diminuez votre stress et votre fatigue. En vivant près de votre lieu de travail, vous améliorez votre qualité de vie et votre équilibre mental et physique.</p>
+                    </div>
+                </div>
+
+                <!-- Carte Gain 4: Environnement (CO2) -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-leaf gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Réduisez votre empreinte</h3>
+                                <p class="gains-card-subtitle my-0">carbone</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Contribuez à un avenir plus vert en réduisant le nombre de kilomètres parcourus et les émissions de CO2 liées à vos trajets quotidiens.</p>
+                    </div>
+                </div>
+
+                <!-- Carte Gain 5: Social -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-friends gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Faites de nouvelles rencontres</h3>
+                                <p class="gains-card-subtitle my-0">et élargissez votre cercle social</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Élargissez votre cercle social en échangeant avec des personnes qui partagent votre quotidien et vos centres d'intérêt, créant ainsi de nouvelles opportunités.</p>
+                    </div>
+                </div>
+
+                <!-- Carte Gain 6: Découverte -->
+                <div class="col-12 feature-col">
+                    <div class="gains-card p-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-map-marked-alt gains-icon me-4"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Explorez de nouveaux quartiers</h3>
+                                <p class="gains-card-subtitle my-0">près de votre travail</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Vivez dans de nouvelles zones, découvrez des restaurants, des boutiques et des activités que vous ne connaîtriez pas autrement, enrichissant ainsi votre expérience de vie.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Note explicative en petit -->
+            <div class="row mt-5">
+                <div class="col text-center">
+                    <small class="text-muted">
+                        <br>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Appel à l'action -->
+    {% include "site/components/_call_to_subscribe.twig" %}
+
+{% endblock %}
