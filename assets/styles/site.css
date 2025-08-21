@@ -1,138 +1,142 @@
-/* Variables de couleur et de style */
 :root {
-    --primary-color: #87CEEB; /* Bleu ciel apaisant */
-    --secondary-color: #90EE90; /* Vert frais */
-    --text-color: #495057; /* Gris foncé doux */
-    --background-color: #F8F8F8; /* Gris clair */
-    --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    --card-hover-transform: translateY(-10px);
-    --card-transition: all 0.3s ease, box-shadow 0.3s ease;
-    --stress-color: #386641; /* Vert forêt pour le stress */
-    --calm-color: #4361EE; /* Bleu royal pour la zénitude */
-    --icon-color: #3498db; /* Bleu vif pour les icônes */
+    --primary-color: #14213d;      /* Bleu nuit */
+    --accent-color: #00c9c7;       /* Cyan élégance */
+    --background-color: #f9fafc;   /* Gris très clair */
+    --surface-color: #fff;         /* Blanc pur */
+    --text-color: #1a1a1a;         /* Noir doux */
+    --text-muted: #6c757d;
+    --shadow: 0 8px 24px rgba(20,33,61,.08);
+    --radius: 1.2rem;
+    --transition: .23s cubic-bezier(.4,0,.2,1);
+    --font-main: 'Inter','Montserrat',Arial,sans-serif;
 }
-
-/* Styles de base */
 body {
-    font-family: 'Inter', sans-serif;
+    background: var(--background-color);
     color: var(--text-color);
-    background-color: var(--background-color);
+    font-family: var(--font-main);
+    line-height: 1.65;
 }
-
-.navbar {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-/* Sections principales de la page */
-.gains-section,
-.features-section {
-    padding: 12rem 0 10rem 0;
-    background-color: #ffffff;
-}
-
-/* Styles pour les cartes de gains et de fonctionnalités */
-.gains-card,
-.card-feature {
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: var(--card-shadow);
-    transition: var(--card-transition);
-    height: 100%;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.gains-card:hover,
-.card-feature:hover {
-    transform: var(--card-hover-transform);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.gains-icon,
-.feature-icon {
-    font-size: 3.5rem;
-    color: var(--icon-color);
-}
-
-/* Styles pour les tuiles de gains et de fonctionnalités */
-.features-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 1.5rem;
-    gap: 1rem;
-}
-
-.feature-col {
-    flex: 0 0 60%;
-    max-width: 60%;
-}
-
-/* Styles pour les sous-titres */
-.gains-card-subtitle {
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: #7f8c8d;
-}
-
-/* Styles de la navigation et des boutons */
-.btn-primary {
-    background-color: var(--primary-color);
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #6495ED;
-}
-
-.nav-link.active {
-    font-weight: 600;
-}
-
-/* Styles de la section Hero et des sections de contenu */
-.hero-section {
-    background-color: #f8f9fa;
-    padding: 8rem 0;
-}
-
-.hero-title {
-    font-size: 3.5rem;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
     font-weight: 700;
 }
+.navbar {
+    background: var(--primary-color);
+    color: #fff;
+    box-shadow: var(--shadow);
+    border-radius: 0 0 var(--radius) var(--radius);
+}
+.navbar-brand {
+    color: var(--accent-color)!important;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+}
+.nav-link {
+    color: #fff !important;
+    font-size: 1.08rem;
+    margin-right: 1rem;
+    border-radius: .6rem;
+    transition: background var(--transition), color var(--transition);
+}
+.nav-link:hover, .nav-link:focus {
+    background: var(--accent-color)!important;
+    color: var(--primary-color)!important;
+}
+.btn-cyan {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    padding: .8rem 2.2rem;
+    transition: background var(--transition), color var(--transition);
+}
+.btn-cyan:hover {
+    background: var(--primary-color);
+    color: var(--accent-color);
+}
 
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
+@media (max-width: 991px) {
+    .hero-section {
+        padding-top: 4rem;
     }
 }
-
-
-.testimonials-section {
-    padding: 5rem 0;
-    background-color: #ffffff;
-    transition: background-color 0.5s ease;
+.card {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+.text-muted {
+    color: var(--text-muted)!important;
+}
+footer {
+    background: var(--primary-color);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+    font-size: 1rem;
 }
 
-.testimonials-section {
-    background-color: #f8f9fa;
-}
-
-/* Styles de la carte de fonctionnalités spécifiques à la page d'accueil */
-.card-feature {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.card-feature:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
-}
-
-.feature-icon {
-    font-size: 3rem;
-    color: #3498db;
-}
+.hero-section, .gains-section {
+            background: var(--background-color);
+            padding-bottom: 4rem;
+        }
+        .gains-container {
+            padding-top: 7rem; /* espace sous navbar, adapte à la hauteur réelle */
+        }
+        @media (max-width: 991px) {
+            .gains-container {
+                padding-top: 5rem;
+            }
+        }
+        .gains-card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            transition: box-shadow .25s, transform .25s, opacity .5s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            opacity: 0;
+            animation: fadeInUp .8s forwards;
+        }
+        .gains-card:nth-child(1) { animation-delay: .1s; }
+        .gains-card:nth-child(2) { animation-delay: .2s; }
+        .gains-card:nth-child(3) { animation-delay: .3s; }
+        .gains-card:nth-child(4) { animation-delay: .4s; }
+        .gains-card:nth-child(5) { animation-delay: .5s; }
+        .gains-card:nth-child(6) { animation-delay: .6s; }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px);}
+        }
+        .gains-card:hover {
+            box-shadow: 0 12px 32px rgba(0,201,199,0.12);
+            transform: translateY(-6px) scale(1.01);
+        }
+        .gains-icon {
+            font-size: 2.6rem;
+            color: var(--accent-color);
+            background: rgba(0,201,199,0.09);
+            border-radius: 1.2rem;
+            padding: 1rem 1.15rem;
+            min-width: 3.5rem;
+            text-align: center;
+        }
+        .gains-card-subtitle {
+            color: var(--accent-color);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        h1, h3 {
+            color: var(--primary-color);
+        }
+        .gains-section .lead {
+            color: var(--text-muted);
+        }
