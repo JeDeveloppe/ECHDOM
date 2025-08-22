@@ -52,6 +52,37 @@ class MapsService
     }
 
     /**
+     * Récupère une adresse aléatoire pour un pays donné.
+     *
+     * @param array $places Les données des lieux.
+     * @param string $typeOfPlace Type de lieu (par exemple, "workplaces, users").
+     * @return Map
+     */
+    public function generateMapWithOneTypeOfPlace(GeolocatableInterface $geolocatable, string $typeOfPlace): Map
+    {
+
+        $icon = $this->getIconByType($typeOfPlace, 'primary');
+        
+        $map = (new Map('default'))
+            ->fitBoundsToMarkers()
+            ->minZoom(4)
+            ->zoom(4);
+        
+        //? On ajoute un marqueur pour chaque lieu
+        $map->addMarker(new Marker(
+            position: new Point($geolocatable->getLatitude(), $geolocatable->getLongitude()),
+            title: $geolocatable->getAddress(),
+            icon: $icon,
+            infoWindow: new InfoWindow(
+                content: '<p>' . $geolocatable->getAddress() . '</p>',
+            )
+        ));
+        
+
+        return $map;
+    }
+
+    /**
      * Ajoute un marqueur spécifique à la carte.
      *
      * @param Map $map La carte à laquelle ajouter le marqueur.

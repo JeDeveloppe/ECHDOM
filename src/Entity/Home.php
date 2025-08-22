@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\HomeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\HomeRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: HomeRepository::class)]
 class Home implements GeolocatableInterface
@@ -25,34 +26,44 @@ class Home implements GeolocatableInterface
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     private ?string $longitude = null;
 
+    #[Groups(['home:details'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'homes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['home:details'])]
     private ?HomeType $type = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2)]
+    #[Groups(['home:details'])]
     private ?string $surface = null;
 
     #[ORM\Column]
+    #[Groups(['home:details'])]
     private ?int $rooms = null;
 
     #[ORM\Column]
+    #[Groups(['home:details'])]
     private ?int $bedrooms = null;
 
     #[ORM\Column]
+    #[Groups(['home:details'])]
     private ?int $bathrooms = null;
 
     #[ORM\ManyToOne(inversedBy: 'homes')]
+    #[Groups(['home:details'])]
     private ?FloorLevel $floor = null;
 
     #[ORM\Column]
+    #[Groups(['home:details'])]
     private ?bool $hasElevator = null;
 
     #[ORM\Column]
+    #[Groups(['home:details'])]
     private ?bool $hasBalcony = null;
 
+    #[Groups(['home:details'])]
     private ?int $timeTravelBetweenHomeAndWorkplace = null; // Ajout d'une propriété pour le temps de trajet
 
     /**
@@ -65,9 +76,11 @@ class Home implements GeolocatableInterface
      * @var Collection<int, HomeEquipment>
      */
     #[ORM\ManyToMany(targetEntity: HomeEquipment::class, inversedBy: 'homes')]
+    #[Groups(['home:details'])]
     private Collection $equipments;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['home:details'])]
     private ?string $otherRules = null;
 
     /**

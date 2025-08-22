@@ -29,7 +29,7 @@ class LengthAndTimeTravelService
      * @param int $radiusKm Le rayon initial de recherche en km.
      * @return array Les logements qui respectent le temps de trajet.
      */
-    public function findNearbyHomesByTravelTime(Workplace $workplace, int $maxTravelTimeMinutes, int $radiusKm = 20): array
+    public function findNearbyHomesByTravelTime(Workplace $workplace, int $maxTravelTimeMinutes, int $radiusKm = 300): array
     {
         // 1. Première étape: filtrage initial par distance à vol d'oiseau pour réduire la charge.
         $nearbyHomes = $this->homeRepository->findHomesNearWorkplace(
@@ -43,24 +43,25 @@ class LengthAndTimeTravelService
 
         $validHomes = [];
 
-        //2. Deuxième étape: filtrage par temps de trajet via une API externe.
-        foreach ($nearbyHomes as $i => $home) {
+        // //2. Deuxième étape: filtrage par temps de trajet via une API externe.
+        // foreach ($nearbyHomes as $i => $home) {
 
-            $travelTime = $this->getDistancesBeetweenTwoGpsPoints($home, $workplace);
+        //     $travelTime = $this->getDistancesBeetweenTwoGpsPoints($home, $workplace);
 
-            // Vérifie si le temps de trajet est valide et en dessous de la limite.
-            if ($travelTime !== null && $travelTime <= $maxTravelTimeMinutes) {
-                $home->setTimeTravelBetweenHomeAndWorkplace($travelTime);// Ajoute le temps de trajet à l'objet Home
-                $validHomes[] = $home;
-            }
-            //?on ralenti les requêtes pour éviter de surcharger l'API
-            if($i > 0 && $i % 5 == 0){
-                sleep(1);
-            }
-        }
-        // return $nearbyHomes;
+        //     // Vérifie si le temps de trajet est valide et en dessous de la limite.
+        //     if ($travelTime !== null && $travelTime <= $maxTravelTimeMinutes) {
+        //         $home->setTimeTravelBetweenHomeAndWorkplace($travelTime);// Ajoute le temps de trajet à l'objet Home
+        //         $validHomes[] = $home;
+        //     }
+        //     //?on ralenti les requêtes pour éviter de surcharger l'API
+        //     if($i > 0 && $i % 5 == 0){
+        //         sleep(1);
+        //     }
+        // }
 
-        return $validHomes;
+        return $nearbyHomes;
+
+        // return $validHomes;
     }
 
     public function getDistancesBeetweenTwoGpsPoints(Home $home, Workplace $workplace, ): ?int
