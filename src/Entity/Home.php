@@ -105,11 +105,18 @@ class Home implements GeolocatableInterface
     #[ORM\ManyToOne(inversedBy: 'homesWithParking')]
     private ?HomeTypeOfParkingAndGarage $TypeOfParking = null;
 
+    /**
+     * @var Collection<int, HomeAvailability>
+     */
+    #[ORM\OneToMany(targetEntity: HomeAvailability::class, mappedBy: 'home', orphanRemoval: true)]
+    private Collection $homeAvailabilities;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
         $this->equipments = new ArrayCollection();
         $this->rules = new ArrayCollection();
+        $this->homeAvailabilities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -418,6 +425,36 @@ class Home implements GeolocatableInterface
     public function setTypeOfParking(?HomeTypeOfParkingAndGarage $TypeOfParking): static
     {
         $this->TypeOfParking = $TypeOfParking;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HomeAvailability>
+     */
+    public function getHomeAvailabilities(): Collection
+    {
+        return $this->homeAvailabilities;
+    }
+
+    public function addHomeAvailability(HomeAvailability $homeAvailability): static
+    {
+        if (!$this->homeAvailabilities->contains($homeAvailability)) {
+            $this->homeAvailabilities->add($homeAvailability);
+            $homeAvailability->setHome($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHomeAvailability(HomeAvailability $homeAvailability): static
+    {
+        if ($this->homeAvailabilities->removeElement($homeAvailability)) {
+            // set the owning side to null (unless already changed)
+            if ($homeAvailability->getHome() === $this) {
+                $homeAvailability->setHome(null);
+            }
+        }
 
         return $this;
     }

@@ -35,7 +35,7 @@
             {% block importmap %}{{ importmap('site') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="d-flex flex-column min-vh-100" {% if disable_turbo is defined and disable_turbo %}data-turbo="false"{% endif %}>
+    <body class="d-flex flex-column min-vh-100" {% if disable_turbo is defined and disable_turbo %} data-turbo="false"{% endif %}>
 
         {% block nav %}
             {% include "site/components/_nav.html.twig" %}
