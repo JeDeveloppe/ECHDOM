@@ -20,6 +20,7 @@ class HomeTypeOfParkingAndGarageService
     public function initialize(): void
     {
         $lists = [
+            ['name' => 'Aucun', 'isForParkingOnly' => true, 'isForGarageOnly' => true],
             ['name' => 'Privé', 'isForParkingOnly' => true, 'isForGarageOnly' => true],
             ['name' => 'Collectif', 'isForParkingOnly' => true, 'isForGarageOnly' => false],
             ['name' => 'Sous-sol', 'isForParkingOnly' => false, 'isForGarageOnly' => true],

@@ -29,7 +29,7 @@ class GeocodingService
                 'q' => $address,
                 'autocomplete' => 1,
                 'index' => 'address',
-                'limit' => 2,
+                'limit' => 1,
                 'returntruegeometry' => false,
             ];
 
@@ -107,5 +107,59 @@ class GeocodingService
                 'message' => $e->getMessage(),
             ];
         }
+    }
+
+    public function searchAddress(string $address, int $limit = 5): array
+    {
+        $results = [];
+
+        try {
+            // Paramètres de la requête pour la recherche d'adresse
+            $queryParams = [
+                'q' => $address,
+                'autocomplete' => 1,
+                'index' => 'address',
+                'limit' => $limit,
+                'returntruegeometry' => false,
+            ];
+
+            // Envoi de la requête GET
+            $response = $this->client->request('GET', "https://data.geopf.fr/geocodage/search", [
+                'query' => $queryParams,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                // Gérer les erreurs HTTP
+                return ['error' => 'La requête a échoué avec le code de statut : ' . $response->getStatusCode()];
+            }
+
+            $data = $response->toArray();
+
+            // Si des résultats sont trouvés, les formater
+            if (isset($data['features']) && count($data['features']) > 0) {
+                foreach ($data['features'] as $feature) {
+                    $coordinates = $feature['geometry']['coordinates'];
+                    $label = $feature['properties']['label'];
+
+                    $results[] = [
+                        'label' => $label,
+                        'latitude' => $coordinates[1],
+                        'longitude' => $coordinates[0],
+                    ];
+                }
+            } else {
+                // Si aucun résultat n'est trouvé, retourner un tableau vide
+                return ['error' => 'Aucun résultat trouvé'];
+            }
+
+        } catch (Exception $e) {
+            // Gérer les exceptions de connexion ou de requête
+            return ['error' => 'Une erreur est survenue lors de la requête : ' . $e->getMessage()];
+        }
+
+        return $results;
     }
 }

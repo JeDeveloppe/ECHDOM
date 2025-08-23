@@ -37,7 +37,9 @@
     </head>
     <body class="d-flex flex-column min-vh-100" {% if disable_turbo is defined and disable_turbo %}data-turbo="false"{% endif %}>
 
-        {% include "site/components/_nav.html.twig" %}
+        {% block nav %}
+            {% include "site/components/_nav.html.twig" %}
+        {% endblock %}
 
         <div class="container-fluid">
             {% block body %}{% endblock %}
