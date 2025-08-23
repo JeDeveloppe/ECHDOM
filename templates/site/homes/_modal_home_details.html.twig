@@ -1,0 +1,71 @@
+<!-- Modal unique pour les détails du logement -->
+<div class="modal fade" id="homeDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-primary text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="homeDetailsModalLabel">Détails du logement</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4">
+                <h6 class="fw-bold text-dark mb-3">Temps de trajet : <span class="fw-normal text-primary" id="modalTimeTravel"></span></h6>
+                
+                <hr class="my-3">
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-12">
+                        <strong class="text-dark d-block">Description :</strong>
+                        <p id="modalDescription" class="text-muted"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Type :</strong>
+                        <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2" id="modalType"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Surface :</strong>
+                        <span id="modalSurface" class="text-muted"></span> m²
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="text-dark d-block">Pièces :</strong>
+                        <span id="modalRooms" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="text-dark d-block">Chambres :</strong>
+                        <span id="modalBedrooms" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="text-dark d-block">Salles de bain :</strong>
+                        <span id="modalBathrooms" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Garage :</strong>
+                        <span id="modalHasGarage" class="text-muted me-2"></span> <span id="modalTypeOfGarage" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Parking :</strong>
+                        <span id="modalHasParking" class="text-muted me-2"></span> <span id="modalTypeOfParking" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Étage :</strong>
+                        <span id="modalFloor" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark d-block">Ascenseur :</strong>
+                        <span id="modalHasElevator" class="text-muted"></span>
+                    </div>
+                        <div class="col-md-6">
+                        <strong class="text-dark d-block">Balcon :</strong>
+                        <span id="modalHasBalcony" class="text-muted"></span>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2">Équipements :</h6>
+                <div id="modalEquipments" class="d-flex flex-wrap gap-2 mb-4">
+                    <!-- Les badges des équipements seront injectés ici par le JS -->
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2">Règles supplémentaires :</h6>
+                <p id="modalOtherRules" class="text-muted"></p>
+            </div>
+        </div>
+    </div>
+</div>

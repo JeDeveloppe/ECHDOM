@@ -6,6 +6,7 @@ use App\Service\ExchangeStatusService;
 use App\Service\FloorLevelService;
 use App\Service\HomeEquipmentService;
 use App\Service\HomeRegulationsAndRestrictionsService;
+use App\Service\HomeTypeOfParkingAndGarageService;
 use App\Service\HomeTypeService;
 use App\Service\NotationCriteriaService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -27,6 +28,7 @@ class InitApp extends Command
         private NotationCriteriaService $notationCriteriaService,
         private HomeTypeService $homeTypeService,
         private FloorLevelService $floorLevelService, // <-- Ajout du service FloorLevelService
+        private HomeTypeOfParkingAndGarageService $homeTypeOfParkingAndGarageService // <-- Ajout du service HomeTypeOfParkingAndGarageService
     )
     {
          parent::__construct();
@@ -60,6 +62,10 @@ class InitApp extends Command
         $io->section('Initialisation des niveaux de sol');
         $this->floorLevelService->initialize(); // <-- Appel de la méthode pour initialiser les niveaux de sol
         $io->success('Initialisation des niveaux de sol terminée avec succès.');
+
+        $io->section('Initialisation des types de parking et garage');
+        $this->homeTypeOfParkingAndGarageService->initialize(); // <-- Appel de la méthode pour initialiser les types de parking et garage
+        $io->success('Initialisation des types de parking et garage terminée avec succès.');
 
         $io->success('Iniatialisation fait avec succès.');
 

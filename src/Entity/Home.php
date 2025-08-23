@@ -93,6 +93,18 @@ class Home implements GeolocatableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\Column]
+    private ?bool $hasGarage = null;
+
+    #[ORM\Column]
+    private ?bool $hasParking = null;
+
+    #[ORM\ManyToOne(inversedBy: 'homesWithGarage')]
+    private ?HomeTypeOfParkingAndGarage $TypeOfGarage = null;
+
+    #[ORM\ManyToOne(inversedBy: 'homesWithParking')]
+    private ?HomeTypeOfParkingAndGarage $TypeOfParking = null;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -358,6 +370,54 @@ class Home implements GeolocatableInterface
     public function setTimeTravelBetweenHomeAndWorkplace(?int $timeTravel): static
     {
         $this->timeTravelBetweenHomeAndWorkplace = $timeTravel;
+
+        return $this;
+    }
+
+    public function hasGarage(): ?bool
+    {
+        return $this->hasGarage;
+    }
+
+    public function setHasGarage(bool $hasGarage): static
+    {
+        $this->hasGarage = $hasGarage;
+
+        return $this;
+    }
+
+    public function hasParking(): ?bool
+    {
+        return $this->hasParking;
+    }
+
+    public function setHasParking(bool $hasParking): static
+    {
+        $this->hasParking = $hasParking;
+
+        return $this;
+    }
+
+    public function getTypeOfGarage(): ?HomeTypeOfParkingAndGarage
+    {
+        return $this->TypeOfGarage;
+    }
+
+    public function setTypeOfGarage(?HomeTypeOfParkingAndGarage $TypeOfGarage): static
+    {
+        $this->TypeOfGarage = $TypeOfGarage;
+
+        return $this;
+    }
+
+    public function getTypeOfParking(): ?HomeTypeOfParkingAndGarage
+    {
+        return $this->TypeOfParking;
+    }
+
+    public function setTypeOfParking(?HomeTypeOfParkingAndGarage $TypeOfParking): static
+    {
+        $this->TypeOfParking = $TypeOfParking;
 
         return $this;
     }

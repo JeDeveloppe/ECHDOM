@@ -7,12 +7,14 @@ use App\Entity\User;
 use App\Entity\Workplace;
 use App\Repository\FloorLevelRepository;
 use App\Repository\HomeEquipmentRepository;
+use App\Repository\HomeTypeOfParkingAndGarageRepository;
 use App\Repository\HomeTypeRepository;
 use App\Service\ExchangeStatusService;
 use App\Service\FloorLevelService;
 use App\Service\GeocodingService;
 use App\Service\HomeEquipmentService;
 use App\Service\HomeRegulationsAndRestrictionsService;
+use App\Service\HomeTypeOfParkingAndGarageService;
 use App\Service\HomeTypeService;
 use App\Service\NotationCriteriaService;
 use Doctrine\Persistence\ObjectManager;
@@ -35,6 +37,8 @@ class AppFixtures extends Fixture
         private NotationCriteriaService $notationCriteriaService, // <-- Ajout du service Notation
         private HomeEquipmentService $homeEquipmentService, // <-- Ajout du service HomeEquipmentService
         private HomeEquipmentRepository $homeEquipmentRepository, // <-- Ajout du repository HomeEquipmentRepository
+        private HomeTypeOfParkingAndGarageService $homeTypeOfParkingAndGarageService, // <-- Ajout du service HomeTypeOfParkingAndGarageService
+        private HomeTypeOfParkingAndGarageRepository $homeTypeOfParkingAndGarageRepository // <-- Ajout du repository HomeTypeOfParkingAndGarageRepository
     )
     {
     }
@@ -50,6 +54,7 @@ class AppFixtures extends Fixture
         $this->homeRegulationsAndRestrictionsService->initialize();
         $this->notationCriteriaService->initialize();
         $this->homeEquipmentService->initialize();
+        $this->homeTypeOfParkingAndGarageService->initialize();
 
 
         //?on charge la librairie faker pour générer des données aléatoires
@@ -127,6 +132,8 @@ class AppFixtures extends Fixture
             $home->setHasElevator($faker->boolean);
             $home->setHasBalcony($faker->boolean);
             $home->setOtherRules($faker->text(200));
+            $home->setHasGarage($faker->boolean(30)); // 30% de chances d'avoir un garage
+            $home->setHasParking($faker->boolean(50)); // 50% de chances d'avoir un parking
             //?on renseigne les équipements de la maison
             $equipments = $this->homeEquipmentRepository->findAll();
             foreach ($equipments as $equipment) {
@@ -134,6 +141,23 @@ class AppFixtures extends Fixture
                     $home->addEquipment($equipment);
                 }
             }
+            //?on renseigne les types de parking et garage de la maison
+            $typeOfParkingAndGarages = $this->homeTypeOfParkingAndGarageRepository->findAll();
+            if($home->hasGarage()) {
+                foreach ($typeOfParkingAndGarages as $typeOfParkingAndGarage) {
+                    if ($typeOfParkingAndGarage->isForGarageOnly() && $faker->boolean(50)) { // 50% de chance d'ajouter le type de garage
+                        $home->setTypeOfGarage($typeOfParkingAndGarage);
+                    }
+                }
+            }
+            if($home->hasParking()) {
+                foreach ($typeOfParkingAndGarages as $typeOfParkingAndGarage) {
+                    if ($typeOfParkingAndGarage->isForParkingOnly() && $faker->boolean(50)) { // 50% de chance d'ajouter le type de parking
+                        $home->setTypeOfParking($typeOfParkingAndGarage);
+                    }
+                }
+            }
+
             //?on ajoute le lieu de résidence à l'utilisateur
             $user->addHome($home);
 

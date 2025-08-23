@@ -69,7 +69,7 @@ final class HomeController extends AbstractController
             //?on va generer une mini carte par résultat
             $homes = [];
             foreach($homesNearMyWorkplace as $home){
-                $map = $this->mapsService->generateMapWithOneTypeOfPlace($home, 'homes');
+                $map = $this->mapsService->generateMiniMapWithOneTypeOfPlace($home, 'homes');
                 //?on ajoute le lieu de résidence de l'utilisateur à la carte
                 $map = $this->mapsService->addMarkerToMap($map, $user->getHomes()->first(), 'homes', 'warning');
                 //?on ajoute le lieu de travail de l'utilisateur à la carte
