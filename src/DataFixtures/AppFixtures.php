@@ -19,11 +19,13 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
 use Faker\Factory as FakerFactory; // <-- Ajout de cette ligne pour l'alias
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     public function __construct(
         private GeocodingService $geocodingService,
+        private UserPasswordHasherInterface $userPasswordHasher,
         private FloorLevelService $floorLevelService,
         private FloorLevelRepository $floorLevelRepository, // <-- Ajout du repository FloorLevelRepository
         private HomeTypeService $homeTypeService, // <-- Ajout du service HomeTypeService
@@ -53,15 +55,32 @@ class AppFixtures extends Fixture
         //?on charge la librairie faker pour générer des données aléatoires
         // Correction de la ligne suivante
         $faker = FakerFactory::create('fr_FR');
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
 
         //?on crée 50 utilisateurs avec leur lieu de travail, le lieu de résidence
         for ($i = 0; $i < 20; $i++) {
             $user = new User();
-            $user->setEmail($faker->email);
-            $user->setFirstName($faker->firstName);
-            $user->setLastName($faker->lastName);
-            $user->setPhoneNumber($faker->phoneNumber);
-            $user->setPassword($faker->password);
+
+            //?si c'est le premier utilisateur, on le définit comme admin
+            if($i === 0) {
+                $user->setEmail($_ENV['ADMIN_EMAIL']);
+                $user->setRoles(['ROLE_SUPER_ADMIN']);
+                $user->setFirstName('Admin');
+                $user->setLastName('User');
+                $user->setPhoneNumber($_ENV['ADMIN_PHONE']);
+                $user->setPassword($this->userPasswordHasher->hashPassword($user, $_ENV['ADMIN_PASSWORD']));
+
+            }else{
+
+                $user->setEmail($faker->email);
+                $user->setFirstName($faker->firstName);
+                $user->setLastName($faker->lastName);
+                $user->setPhoneNumber($faker->phoneNumber);
+                $user->setPassword($this->userPasswordHasher->hashPassword($user, $faker->password));
+            }
+
+            //?les autres champs de l'utilisateur en commun
+            $user->setCreatedAt($now);
             $user->setBiography($faker->text(200));
             $user->setVerified(true);
             $user->setPointsGained(0);

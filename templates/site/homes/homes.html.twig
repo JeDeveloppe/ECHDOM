@@ -1,0 +1,225 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Trouvez votre logement idéal - Proximité{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body pt-4 py-2">
+                        <h2 class="card-title fw-bold text-primary mb-3">Rechercher un logement</h2>
+                        <div class="row g-4 align-items-center">
+                            <div class="col-12 col-md-4">
+                                <strong class="text-dark d-block mb-1">Votre lieu de travail :</strong>
+                                <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-3 py-2">{{ app.user.workplaces.first.address }}</span>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <strong class="text-dark d-block mb-1">Votre temps de trajet actuel :</strong>
+                                <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill px-3 py-2">{{ timeBetweenmMyHomeAndMyWorkplace }} min</span>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                {{ form_start(form, {'attr': {'class': 'd-flex flex-column flex-sm-row align-items-center gap-3'}}) }}
+                                    <div class="flex-grow-1 w-100">
+                                        {{ form_label(form.duration, 'Durée de trajet max.', {'label_attr': {'class': 'form-label fw-semibold text-dark mb-1'}}) }}
+                                        <div class="d-flex align-items-center">
+                                            {{ form_widget(form.duration, {'attr': {'class': 'form-range me-2', 'oninput': 'this.nextElementSibling.innerText = this.value + " min"'}}) }}
+                                            <span class="ms-3 fw-bold text-primary">{{ form.duration.vars.value }} min</span>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow flex-shrink-0 mt-4 mt-sm-0">
+                                        <i class="fa-solid fa-magnifying-glass me-2"></i> Rechercher
+                                    </button>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12">
+                {% if app.request.request.count > 0 %}
+                    {% if homes is not empty %}
+                        <h3 class="fw-bold mb-4 text-dark-emphasis">Résultats de la recherche ({{ homes|length }} logement{{ homes|length > 1 ? 's' : '' }})</h3>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            {% for home in homes %}
+                                <div class="col">
+                                    <div class="card h-100 rounded-4 overflow-hidden shadow-sm border-0">
+                                        <div class="position-relative">
+                                            <div class="map-container" style="height: 250px;">
+                                                {{ ux_map(home.map, {style: 'height: 250px;'}) }}
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-4 d-flex flex-column text-center">
+                                            <h5 class="card-title fw-bold text-dark mb-2">Temps de trajet: {{ home.details.timeTravelBetweenHomeAndWorkplace }} min</h5>
+                                            <button type="button" 
+                                                class="btn btn-primary w-100 rounded-pill mt-auto" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#homeDetailsModal"
+                                                data-home-id="{{ home.details.id }}">
+                                                <i class="fa-solid fa-circle-info me-2"></i> Voir les détails
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning text-center rounded-4 shadow-sm" role="alert">
+                            <i class="fa-regular fa-face-smile me-2"></i> Aucun logement ne correspond à vos critères de recherche.
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="p-5 bg-info-subtle text-info-emphasis rounded-4 shadow-sm">
+                        <h3 class="fw-bold mb-3">Prêt à trouver votre havre de paix ?</h3>
+                        <p class="lead mb-0">Définissez vos critères dans le formulaire de recherche et lancez la recherche pour découvrir les logements qui s'offrent à vous.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="homeDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header bg-primary text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-semibold" id="homeDetailsModalLabel">Détails du logement</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4">
+                <h6 class="fw-bold text-dark mb-3">Temps de trajet : <span class="fw-normal text-primary" id="modalTimeTravel"></span></h6>
+                
+                <hr class="my-3">
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-12">
+                        <strong class="text-dark">Description :</strong>
+                        <p id="modalDescription" class="text-muted"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark">Type :</strong>
+                        <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill px-3 py-2" id="modalType"></span><br/>
+                        <strong class="text-dark">Surface :</strong>
+                        <span id="modalSurface" class="text-muted"></span> m²
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark">Pièces :</strong> <span id="modalRooms" class="text-muted"></span><br/>
+                        <strong class="text-dark">Chambres :</strong> <span id="modalBedrooms" class="text-muted"></span><br/>
+                        <strong class="text-dark">Salle de bain :</strong> <span id="modalBathrooms" class="text-muted"></span><br/>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark">Étage :</strong>
+                        <span id="modalFloor" class="text-muted"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong class="text-dark">Ascenseur / Balcon :</strong>
+                        <span id="modalHasElevator" class="text-muted"></span> / <span id="modalHasBalcony" class="text-muted"></span>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2">Équipements :</h6>
+                <div id="modalEquipments" class="d-flex flex-wrap gap-2 mb-4">
+                    </div>
+
+                <h6 class="fw-bold text-dark mb-2">Règles supplémentaires :</h6>
+                <p id="modalOtherRules" class="text-muted"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const homeDetailsModal = document.getElementById('homeDetailsModal');
+    const modalTime = homeDetailsModal.querySelector('#modalTimeTravel');
+    const modalEquipments = homeDetailsModal.querySelector('#modalEquipments');
+    
+    // Nouveaux sélecteurs pour les autres propriétés
+    const modalDescription = homeDetailsModal.querySelector('#modalDescription');
+    const modalType = homeDetailsModal.querySelector('#modalType');
+    const modalSurface = homeDetailsModal.querySelector('#modalSurface');
+    const modalRooms = homeDetailsModal.querySelector('#modalRooms');
+    const modalBedrooms = homeDetailsModal.querySelector('#modalBedrooms');
+    const modalBathrooms = homeDetailsModal.querySelector('#modalBathrooms');
+    const modalFloor = homeDetailsModal.querySelector('#modalFloor');
+    const modalHasElevator = homeDetailsModal.querySelector('#modalHasElevator');
+    const modalHasBalcony = homeDetailsModal.querySelector('#modalHasBalcony');
+    const modalOtherRules = homeDetailsModal.querySelector('#modalOtherRules');
+
+    homeDetailsModal.addEventListener('show.bs.modal', async event => {
+        const button = event.relatedTarget;
+        const homeId = button.getAttribute('data-home-id');
+        
+        // Réinitialiser les contenus de la modale en attendant la réponse
+        modalTime.textContent = 'Chargement...';
+        modalEquipments.innerHTML = '<span class="text-muted fst-italic">Chargement des équipements...</span>';
+        
+        // Réinitialiser les autres champs
+        modalDescription.textContent = '';
+        modalType.textContent = '';
+        modalSurface.textContent = '';
+        modalRooms.textContent = '';
+        modalBedrooms.textContent = '';
+        modalBathrooms.textContent = '';
+        modalFloor.textContent = '';
+        modalHasElevator.textContent = '';
+        modalHasBalcony.textContent = '';
+        modalOtherRules.textContent = '';
+
+
+        try {
+            const response = await fetch(`/api/home/${homeId}`);
+            if (!response.ok) {
+                throw new Error('Erreur réseau ou du serveur.');
+            }
+            const homeDetails = await response.json();
+
+            // Mettre à jour la modale avec les données de l'API
+            modalTime.textContent = homeDetails.timeTravelBetweenHomeAndWorkplace + ' min';
+            
+            // Mise à jour des nouvelles propriétés
+            modalDescription.textContent = homeDetails.description;
+            // Pour le type et l'étage, l'API renvoie un objet. On accède à la propriété 'name'.
+            modalType.textContent = homeDetails.type.name;
+            modalSurface.textContent = homeDetails.surface;
+            modalRooms.textContent = homeDetails.rooms;
+            modalBedrooms.textContent = homeDetails.bedrooms;
+            modalBathrooms.textContent = homeDetails.bathrooms;
+            modalFloor.textContent = homeDetails.floor.name;
+            // Pour les booléens, on affiche "Oui" ou "Non"
+            modalHasElevator.textContent = homeDetails.hasElevator ? 'Oui' : 'Non';
+            modalHasBalcony.textContent = homeDetails.hasBalcony ? 'Oui' : 'Non';
+            modalOtherRules.textContent = homeDetails.otherRules;
+            if (homeDetails.otherRules === null) {
+                 modalOtherRules.textContent = 'Pas de règles supplémentaires renseignées.';
+            }
+
+            // Gestion des équipements
+            modalEquipments.innerHTML = '';
+            if (homeDetails.equipments && homeDetails.equipments.length > 0) {
+                homeDetails.equipments.forEach(equipment => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2';
+                    badge.textContent = equipment.name; 
+                    modalEquipments.appendChild(badge);
+                });
+            } else {
+                modalEquipments.innerHTML = '<span class="text-muted fst-italic">Aucun équipement renseigné.</span>';
+            }
+        } catch (error) {
+            console.error('Échec de la récupération des détails du logement:', error);
+            modalTime.textContent = 'Erreur';
+            modalEquipments.innerHTML = '<span class="text-danger">Impossible de charger les détails.</span>';
+        }
+    });
+});
+    </script>
+{% endblock %}

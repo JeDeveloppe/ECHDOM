@@ -1,0 +1,100 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/theme-modern.css') }}">
+    <style>
+        .login-section {
+            background: var(--background-color);
+            padding-bottom: 4rem;
+        }
+        .login-container {
+            padding-top: 7rem;
+            max-width: 420px;
+        }
+        @media (max-width: 991px) {
+            .login-container {
+                padding-top: 5rem;
+            }
+        }
+        .login-card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem 2rem;
+            margin-top: 2rem;
+        }
+        .form-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.16rem rgba(0,201,199,0.16);
+        }
+        .btn-login {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+        }
+        .btn-login:hover, .btn-login:focus {
+            background: #00b0ad;
+            color: #fff;
+        }
+        .login-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="login-section">
+    <div class="container d-flex justify-content-center">
+        <div class="login-container w-100">
+            <div class="login-card shadow text-center">
+                <span class="login-icon"><i class="fas fa-sign-in-alt"></i></span>
+                <h1 class="fw-bold mb-3">Connexion</h1>
+                <p class="mb-4 text-muted">Accédez à votre espace WORKaway</p>
+
+                <form method="post" autocomplete="on">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-floating mb-3 text-start">
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus placeholder="Adresse e-mail">
+                        <label for="inputEmail">Adresse e-mail</label>
+                    </div>
+                    <div class="form-floating mb-3 text-start">
+                        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required placeholder="Mot de passe">
+                        <label for="inputPassword">Mot de passe</label>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="form-check mb-3 text-start">
+                        <input type="checkbox" name="_remember_me" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                    </div>
+
+                    <button class="btn btn-login btn-lg w-100 mt-2 mb-3" type="submit">
+                        Se connecter
+                    </button>
+                </form>
+                <div class="mt-3">
+                    <span>Pas encore de compte ? <a href="{{ path('site_register') }}" class="link-primary">Inscrivez-vous</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

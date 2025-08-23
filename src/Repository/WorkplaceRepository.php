@@ -16,6 +16,8 @@ class WorkplaceRepository extends ServiceEntityRepository
         parent::__construct($registry, Workplace::class);
     }
 
+    
+
     //    /**
     //     * @return Workplace[] Returns an array of Workplace objects
     //     */

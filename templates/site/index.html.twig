@@ -1,20 +1,141 @@
-{% extends 'base.html.twig' %}
+{% extends 'site/base.html.twig' %}
 
-{% block title %}Hello SiteController!{% endblock %}
+{% block title %}Workaway - Accueil{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<header class="hero-section py-5 bg-white mt-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0 mt-4">
+                <h1 class="display-4 fw-bold mb-3 text-primary">Échangez, gagnez du temps, vivez mieux !</h1>
+                <p class="lead text-muted mb-4">Workaway vous permet de trouver un échange de domicile près de votre travail pour améliorer votre quotidien et votre budget.</p>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="https://images.unsplash.com/photo-1517048676731-d65bc937f952?auto=format&fit=crop&w=900&q=80"
+                     alt="Workaway illustration"
+                     class="img-fluid rounded shadow-lg" style="max-width: 90%;">
+            </div>
+        </div>
+    </div>
+</header>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<a href="#features" class="d-block text-center my-3" style="font-size:2.2rem;color:var(--accent-color);opacity:0.7;">
+    <i class="fa-solid fa-angle-down"></i>
+</a>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/RENE/Sites/ECHDOM/src/Controller/SiteController.php</code></li>
-        <li>Your template at <code>/Users/RENE/Sites/ECHDOM/templates/site/index.html.twig</code></li>
-    </ul>
-</div>
+<section id="features" class="features-section py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-5 fw-bold text-primary">Comment Workaway transforme votre quotidien</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-hand-holding-heart fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Moins de stress</h5>
+                        <p class="card-text text-muted">Éliminez le stress du trajet quotidien et retrouvez la sérénité en étant proche de votre lieu de travail.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-clock fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Gagnez du temps libre</h5>
+                        <p class="card-text text-muted">Récupérez jusqu'à 15 heures par semaine et réinvestissez-les dans vos passions, votre famille ou vos loisirs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-dollar-sign fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Faites des économies réelles</h5>
+                        <p class="card-text text-muted">Réduisez vos frais de carburant, d'entretien de voiture ou d'abonnement de transport.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-leaf fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Réduisez votre empreinte carbone</h5>
+                        <p class="card-text text-muted">Contribuez à un avenir plus vert en réduisant le nombre de kilomètres parcourus et les émissions de CO2 liées à vos trajets quotidiens.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-user-friends fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Faites de nouvelles rencontres</h5>
+                        <p class="card-text text-muted">Élargissez votre cercle social en échangeant avec des personnes qui partagent votre quotidien et vos centres d'intérêt.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <div class="card-body py-4">
+                        <div class="mb-3"><i class="fas fa-search fa-2x text-primary"></i></div>
+                        <h5 class="card-title fw-bold text-primary">Découvrez de nouveaux quartiers</h5>
+                        <p class="card-text text-muted">Vivez dans de nouvelles zones, découvrez des restaurants, des boutiques et des activités que vous ne connaîtriez pas autrement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="testimonials-section py-5 bg-white">
+    <div class="container text-center">
+        <h2 class="mb-5 fw-bold text-primary">Ce qu'ils disent de nous</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div id="testimonialCarousel" class="carousel slide testimonial-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <p class="lead text-muted">"Workaway a changé ma vie. Je passais 2h par jour dans les transports, maintenant je peux rentrer chez moi à pied et profiter de ma soirée. Les économies sont un bonus !"</p>
+                            <footer class="blockquote-footer mt-3 text-primary"><cite title="Source Title">Jean, développeur à Paris</cite></footer>
+                        </div>
+                        <div class="carousel-item">
+                            <p class="lead text-muted">"Le concept est génial. J'ai rencontré des gens super sympas et j'ai gagné en qualité de vie. Parfait."</p>
+                            <footer class="blockquote-footer mt-3 text-primary"><cite title="Source Title">Marie, consultante à Lyon</cite></footer>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-5 fw-bold text-primary">Questions fréquentes</h2>
+        <ul class="faq-list list-unstyled">
+            <li class="mb-4 p-3 bg-white rounded shadow-sm">
+                <strong>Comment fonctionne l'échange ?</strong><br>
+                Vous proposez votre logement et trouvez un échange adapté à vos besoins près de votre travail.
+            </li>
+            <li class="mb-4 p-3 bg-white rounded shadow-sm">
+                <strong>Est-ce sécurisé ?</strong><br>
+                Toutes les annonces sont vérifiées et les échanges sécurisés via notre plateforme.
+            </li>
+            <li class="mb-4 p-3 bg-white rounded shadow-sm">
+                <strong>Puis-je tester avant de m'engager ?</strong><br>
+                Oui, des périodes d’essai sont proposées pour découvrir le service sans engagement.
+            </li>
+        </ul>
+    </div>
+</section>
 {% endblock %}

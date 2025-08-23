@@ -1,0 +1,101 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Gagnez plus que de l'argent{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <section id="gains" class="gains-section text-center">
+        <div class="container gains-container">
+            <h1 class="display-4 fw-bold mb-4">Gagnez plus que de l'argent</h1>
+            <p class="lead text-muted mb-5">WORKaway vous offre des bénéfices concrets bien au-delà de la simple économie financière.</p>
+
+            <div class="row g-4">
+                <!-- Carte Gain 1: Temps -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-clock gains-icon me-4  align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Jusqu'à 15h gagnées</h3>
+                                <p class="gains-card-subtitle my-0">par semaine</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Fini les heures perdues dans les embouteillages. Ce temps précieux vous appartient désormais : pour vos passions, votre famille ou pour vous reposer.</p>
+                        <small class="text-muted mt-3 d-block">Basé sur une moyenne de 1h30 de trajet aller-retour par jour, 5 jours par semaine.</small>
+                    </div>
+                </div>
+                <!-- Carte Gain 2: Argent -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-euro-sign gains-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Jusqu'à 200€ économisés</h3>
+                                <p class="gains-card-subtitle my-0">par mois</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Réduisez vos dépenses liées aux trajets domicile-travail : carburant, entretien du véhicule ou abonnements de transport en commun.</p>
+                        <small class="text-muted mt-3 d-block">Basé sur une moyenne de 50km de trajet aller-retour par jour, 5 jours par semaine.</small>
+                    </div>
+                </div>
+                <!-- Carte Gain 3: Bien-être -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-heart gains-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Retrouvez la sérénité</h3>
+                                <p class="gains-card-subtitle my-0">au quotidien</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Diminuez votre stress et votre fatigue. En vivant près de votre lieu de travail, vous améliorez votre qualité de vie et votre équilibre.</p>
+                    </div>
+                </div>
+                <!-- Carte Gain 4: Environnement -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-leaf gains-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Réduisez votre empreinte</h3>
+                                <p class="gains-card-subtitle my-0">carbone</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Contribuez à un avenir plus vert en réduisant les kilomètres parcourus et les émissions de CO2 de vos trajets quotidiens.</p>
+                    </div>
+                </div>
+                <!-- Carte Gain 5: Social -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-friends gains-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Nouvelles rencontres</h3>
+                                <p class="gains-card-subtitle my-0">élargissez votre cercle</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Rencontrez des personnes qui partagent votre quotidien et vos centres d'intérêt, créez de nouvelles opportunités.</p>
+                    </div>
+                </div>
+                <!-- Carte Gain 6: Découverte -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="gains-card p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-map-marked-alt gains-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h3 class="fw-bold my-0">Explorez</h3>
+                                <p class="gains-card-subtitle my-0">de nouveaux quartiers</p>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3">Découvrez de nouveaux restaurants, boutiques et activités, enrichissez votre expérience de vie près de votre travail.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "site/components/_call_to_subscribe.twig" %}
+{% endblock %}

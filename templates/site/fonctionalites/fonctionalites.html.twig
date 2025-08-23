@@ -1,0 +1,159 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Fonctionnalités{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/theme-modern.css') }}">
+    <style>
+        .features-section {
+            background: var(--background-color);
+            padding-bottom: 4rem;
+        }
+        .features-container {
+            padding-top: 7rem; /* espace sous la navbar */
+        }
+        @media (max-width: 991px) {
+            .features-container {
+                padding-top: 5rem;
+            }
+        }
+        .card-feature {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            transition: box-shadow .25s, transform .25s, opacity .5s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            opacity: 0;
+            animation: fadeInUp .8s forwards;
+        }
+        .card-feature:nth-child(1) { animation-delay: .1s; }
+        .card-feature:nth-child(2) { animation-delay: .2s; }
+        .card-feature:nth-child(3) { animation-delay: .3s; }
+        .card-feature:nth-child(4) { animation-delay: .4s; }
+        .card-feature:nth-child(5) { animation-delay: .5s; }
+        .card-feature:nth-child(6) { animation-delay: .6s; }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px);}
+        }
+        .card-feature:hover {
+            box-shadow: 0 12px 32px rgba(0,201,199,0.12);
+            transform: translateY(-6px) scale(1.01);
+        }
+        .feature-icon {
+            font-size: 2.3rem;
+            color: var(--accent-color);
+            background: rgba(0,201,199,0.09);
+            border-radius: 1.2rem;
+            padding: 1rem 1.15rem;
+            min-width: 3.5rem;
+            text-align: center;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 1.18rem;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        .features-section .lead {
+            color: var(--text-muted);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section id="features" class="features-section text-center">
+        <div class="container features-container">
+            <h1 class="display-4 fw-bold mb-4">Fonctionnalités</h1>
+            <p class="lead text-muted mb-5">Découvrez comment WORKaway rend votre quotidien plus simple, flexible et gratifiant.</p>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Carte Fonctionnalité 1: Recherche intuitive -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-search-location feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Recherche intelligente</h5>
+                                <p class="card-text text-muted my-0">Trouvez des logements près de votre travail, filtrez par type, équipements et plus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 2: Profils complets -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-check feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Profils vérifiés</h5>
+                                <p class="card-text text-muted my-0">Des profils détaillés avec notes et avis pour garantir la confiance et la sécurité.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 3: Messagerie sécurisée -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-comments feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Messagerie intégrée</h5>
+                                <p class="card-text text-muted my-0">Échangez en toute sécurité, sans partager vos infos personnelles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 4: Évaluations mutuelles -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-star-half-alt feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Système d'évaluation</h5>
+                                <p class="card-text text-muted my-0">Notes sur propreté, communication, fiabilité : une communauté transparente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Fonctionnalité 5: Gestion des échanges -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-tasks feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Gestion simplifiée</h5>
+                                <p class="card-text text-muted my-0">Tableau de bord intuitif pour suivre et gérer vos échanges et annonces.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carte Fonctionnalité 6: Support client -->
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card card-feature p-4 w-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-headset feature-icon me-4 align-self-center flex-shrink-0"></i>
+                            <div>
+                                <h5 class="card-title fw-bold my-0">Support dédié</h5>
+                                <p class="card-text text-muted my-0">Notre équipe répond à toutes vos questions et vous accompagne à chaque étape.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include "site/components/_call_to_subscribe.twig" %}
+{% endblock %}

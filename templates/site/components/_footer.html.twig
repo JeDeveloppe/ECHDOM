@@ -1,0 +1,34 @@
+<footer class="row g-0 align-items-center p-4 pb-1 mt-auto" style="background-color: rgba(0, 0, 0, 0.05);">
+	<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0">
+	    {% set startedAt = 2020 %}
+		{% set now = 'now'|date('Y') %}
+		{% if startedAt != now %}
+			{{ startedAt }} - {{ now }}<br/>
+		{% else %}
+			{{ now }}<br/>
+		{% endif %}
+		<div id="blockToDisplayClock" class="clock" onload="showTime()"></div>
+	</div>
+	<div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+		<a href="http://www.linkedin.com/in/wetta-rene-jd" class="mx-2" target="_blank" role="button"><twig:ux:icon name="skill-icons:linkedin" class="footerIconeSize"/></a>
+		<a href="https://github.com/JeDeveloppe" class="mx-2" target="_blank" role="button"><twig:ux:icon name="skill-icons:github-dark" class="footerIconeSize"/></a>
+		<a href="https://www.facebook.com/JeDevloppe" class="mx-2" target="_blank" role="button"><twig:ux:icon name="devicon:facebook" class="footerIconeSize"/></a>
+	</div>
+	<ul class="col-12 col-md-4 nav justify-content-center justify-content-md-end">
+		{# <li class="nav-item">
+			<a class="nav-link text-dark" href="{{ path('site_mentions_legales') }}">Mentions légales</a>
+		</li> #}
+	</ul>
+	<ul class="col-12 mt-2 list-group list-group-horizontal list-unstyled justify-content-start align-items-center" style="font-size: 0.6em;">
+		{# Wrap the text in a list item and align it #}
+		<li class="nav-item d-flex align-items-center me-2">
+			Développé avec:
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-dark" href="https://symfony.com" target="_blank" rel="noopener noreferrer" title="Visitez Symfony"><twig:ux:icon name="skill-icons:symfony-dark" class="footerIconeDevBySize" /></a>
+		</li>
+		<li class="nav-item ms-1">
+			<a class="nav-link text-dark" href="https://www.servbay.com" target="_blank" rel="noopener noreferrer" title="Visitez ServBay - Votre environnement de développement local"><img src="{{ asset('images/icon_blue@64.png') }}" alt="Logo de ServBay" class="footerIconeDevBySize" /></a>
+		</li>
+	</ul>
+</footer>

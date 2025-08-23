@@ -12,8 +12,8 @@
  * The "importmap:require" command can be used to add new entries to this file.
  */
 return [
-    'app' => [
-        'path' => './assets/app.js',
+    'site' => [
+        'path' => './assets/js/site.js',
         'entrypoint' => true,
     ],
     '@hotwired/stimulus' => [
@@ -34,5 +34,15 @@ return [
     ],
     '@symfony/ux-leaflet-map' => [
         'path' => './vendor/symfony/ux-leaflet-map/assets/dist/map_controller.js',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.7',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.7',
+        'type' => 'css',
     ],
 ];
