@@ -1,0 +1,49 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Mes biens à l'échange{% endblock %}
+
+{% block nav %}
+    {% include "member/components/_nav.html.twig" %}
+{% endblock %}
+
+{% block body %}
+    <div class="container my-5 content-offset">
+        <h1 class="text-center mb-5">Mes biens à l'échange</h1>
+
+        {% if homes is not empty %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for home in homes %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm border-0 rounded-3">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold text-primary">{{ home.address }}</h5>
+                                <p class="card-text text-muted mb-3">
+                                    {{ home.description|length > 100 ? home.description|slice(0, 100) ~ '...' : home.description }}
+                                </p>
+                                <ul class="list-group list-group-flush mb-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-secondary">Pièces :</span>
+                                        <span class="fw-bold">{{ home.rooms }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-secondary">Surface :</span>
+                                        <span class="fw-bold">{{ home.surface }} m²</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-auto text-center">
+                                    <a href="{{ path('member_my_property_in_exchange', {id: home.id}) }}" class="btn btn-primary w-100">
+                                        Voir les détails
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                Vous n'avez pas encore ajouté de bien immobilier.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Mon Tableau de Bord{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="fw-bold text-primary display-4">Mon tableau de bord</h1>
+                <p class="lead text-muted">Bienvenue, {{ app.user.firstname }} ! Gérez vos propriétés et vos échanges en un coup d'œil.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Section Lieu de travail -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 p-3 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <div class="bg-primary-subtle text-primary p-3 rounded-circle mb-3">
+                            <i class="fa-solid fa-building-user fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-semibold text-dark mb-2">Lieu de travail</h5>
+                        <!-- Conteneur pour les messages de retour -->
+                        <div id="workplace-message" class="w-100 mb-2"></div>
+                        
+                        <div class="w-100 mt-2">
+                            {{ form_start(workplaceForm, {'attr': {'class': 'd-flex flex-column align-items-stretch', 'id': 'workplaceForm'}}) }}
+                                <p class="card-text text-muted mb-3" id="workplaceAddress">{{ app.user.workplaces.first.address|default('Non renseigné') }}</p>
+                                <div class="position-relative w-100 mb-3">
+                                    {# Le champ d'adresse utilise le placeholder, l'ancienne adresse est affichée dans le paragraphe ci-dessus #}
+                                    {{ form_row(workplaceForm.address, {'label': false, 'attr': {'id': 'full_address_address', 'class': 'form-control rounded-pill', 'placeholder': 'Nouvelle adresse...', 'autocomplete': 'off'}}) }}
+                                    <!-- Conteneur pour les résultats de l'autocomplétion -->
+                                    <div id="autocomplete-results" class="position-absolute w-100 bg-white border border-top-0 rounded-bottom-3 shadow-sm z-3 overflow-y-auto" style="max-height: 200px; display: none; z-index: 100;"></div>
+                                </div>
+                                {# Les champs latitude et longitude sont inclus dans le formulaire pour une soumission correcte #}
+                                {{ form_row(workplaceForm.latitude, {'attr': {'id': 'full_address_latitude'}}) }}
+                                {{ form_row(workplaceForm.longitude, {'attr': {'id': 'full_address_longitude'}}) }}
+                                {{ form_row(workplaceForm._token) }}
+
+                                <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill mt-3" id="saveButton" style="z-index: 101; display: none;">
+                                    <i class="fa-solid fa-save me-2" id="saveIcon"></i>
+                                    <i class="fa-solid fa-spinner fa-spin me-2" id="loadingIcon" style="display: none;"></i>
+                                    <span id="buttonText">Enregistrer</span>
+                                </button>
+                            {{ form_end(workplaceForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Bien en échange -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 p-3 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <div class="bg-primary-subtle text-primary p-3 rounded-circle mb-3">
+                            <i class="fa-solid fa-house-chimney-user fa-2x"></i>
+                        </div>
+                        {# s'il y a au moins un bien #}
+                        {% if app.user.homes is not empty %}
+                            {% set textMyHome = "Mon bien" %}
+                            {% if app.user.homes | length > 1 %}{% set textMyHome = "Mes biens" %}{% endif %}
+                            <h5 class="card-title fw-semibold text-dark mb-2">{{ textMyHome }} en échange</h5>
+                            {% for home in app.user.homes %}
+                                <p class="card-text text-muted mb-0">{{ home.address }}</p>
+                            {% endfor %}
+                            <a href="{{ path('member_properties', ) }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Gérer</a>
+                        {% else %}
+                            <p class="card-text text-muted fst-italic">Aucun bien proposé</p>
+                            <a href="{{ path('member_properties') }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Proposer un bien</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Notation -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 p-3 bg-light">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <div class="bg-primary-subtle text-primary p-3 rounded-circle mb-3">
+                            <i class="fa-solid fa-star fa-2x"></i>
+                        </div>
+                        <h5 class="card-title fw-semibold text-dark mb-2">Ma notation</h5>
+                        {% if user.rating is defined and user.rating is not null %}
+                            <p class="card-text text-muted mb-0">
+                                {% for i in 1..5 %}
+                                    <i class="fa-solid fa-star {% if i <= user.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                {% endfor %}
+                            </p>
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill px-3 py-2 mt-2">{{ user.rating }}/5</span>
+                        {% else %}
+                            <p class="card-text text-muted fst-italic">Pas encore de notation</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5">
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/member/dashboard_address.js') }}"></script>
+{% endblock %}

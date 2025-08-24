@@ -35,11 +35,18 @@
             {% block importmap %}{{ importmap('site') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="d-flex flex-column min-vh-100" {% if disable_turbo is defined and disable_turbo %}data-turbo="false"{% endif %}>
+    <body class="d-flex flex-column min-vh-100" {% if disable_turbo is defined and disable_turbo %} data-turbo="false"{% endif %}>
 
-        {% include "site/components/_nav.html.twig" %}
 
         <div class="container-fluid">
+            {% block nav %}
+                {% include "site/components/_nav.html.twig" %}
+            {% endblock %}
+
+            <!-- Affichage des messages flash (succès, erreur, etc.) -->
+            {% include "site/components/_flash_messages.html.twig" %}
+            
+            {# Contenu principal de la page #}
             {% block body %}{% endblock %}
         </div>
 

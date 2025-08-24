@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg fixed-top py-3 zen-navbar">
     <div class="container">
-        <a class="navbar-brand fw-bold text-gold" href="#">WORKaway</a>
+        <a class="navbar-brand fw-bold text-gold" href="/">WORKaway</a>
         <button class="navbar-toggler border-gold" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,21 +15,21 @@
                         </li>
                     </ul>
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ app.user.avatarUrl|default('/images/default-avatar.png') }}" alt="Avatar" class="rounded-circle me-2" style="width:36px;height:36px;">
-                            <span class="fw-semibold">Bonjour {{ app.user.firstName|default(app.user.email) }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Mon profil</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sync-alt me-2"></i> Mes échanges</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-                                    <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ app.user.avatarUrl|default('/images/default-avatar.png') }}" alt="Avatar" class="rounded-circle me-2" style="width:36px;height:36px;">
+                        <span class="fw-semibold">Bonjour {{ app.user.firstName|default(app.user.email) }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="{{ path('member_dashboard') }}"><i class="fas fa-user me-2"></i> Mon tableau de bord</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sync-alt me-2"></i> Mes échanges</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 </div>
             {% else %}
                 {# Si l'utilisateur n'est pas connecté #}
