@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\HomeTypeRepository;
+use App\Repository\PropertyTypeRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: HomeTypeRepository::class)]
-class HomeType
+#[ORM\Entity(repositoryClass: PropertyTypeRepository::class)]
+class PropertyType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,18 +17,18 @@ class HomeType
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'type')]
-    private Collection $homes;
+    #[ORM\OneToMany(targetEntity: Property::class, mappedBy: 'type')]
+    private Collection $properties;
 
     public function __construct()
     {
-        $this->homes = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,27 +51,27 @@ class HomeType
     /**
      * @return Collection<int, Home>
      */
-    public function getHomes(): Collection
+    public function getProperties(): Collection
     {
-        return $this->homes;
+        return $this->properties;
     }
 
-    public function addHome(Home $home): static
+    public function addProperty(Property $property): static
     {
-        if (!$this->homes->contains($home)) {
-            $this->homes->add($home);
-            $home->setType($this);
+        if (!$this->properties->contains($property)) {
+            $this->properties->add($property);
+            $property->setType($this);
         }
 
         return $this;
     }
 
-    public function removeHome(Home $home): static
+    public function removeHome(Property $property): static
     {
-        if ($this->homes->removeElement($home)) {
+        if ($this->properties->removeElement($property)) {
             // set the owning side to null (unless already changed)
-            if ($home->getType() === $this) {
-                $home->setType(null);
+            if ($property->getType() === $this) {
+                $property->setType(null);
             }
         }
 

@@ -56,11 +56,11 @@
                             <i class="fa-solid fa-house-chimney-user fa-2x"></i>
                         </div>
                         {# s'il y a au moins un bien #}
-                        {% if app.user.homes is not empty %}
+                        {% if app.user.properties is not empty %}
                             {% set textMyHome = "Mon bien" %}
-                            {% if app.user.homes | length > 1 %}{% set textMyHome = "Mes biens" %}{% endif %}
+                            {% if app.user.properties | length > 1 %}{% set textMyHome = "Mes biens" %}{% endif %}
                             <h5 class="card-title fw-semibold text-dark mb-2">{{ textMyHome }} en échange</h5>
-                            {% for home in app.user.homes %}
+                            {% for home in app.user.properties %}
                                 <p class="card-text text-muted mb-0">{{ home.address }}</p>
                             {% endfor %}
                             <a href="{{ path('member_properties', ) }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Gérer</a>

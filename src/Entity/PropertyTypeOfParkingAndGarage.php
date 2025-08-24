@@ -6,10 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Repository\HomeTypeOfParkingAndGarageRepository;
+use App\Repository\PropertyTypeOfParkingAndGarageRepository;
 
-#[ORM\Entity(repositoryClass: HomeTypeOfParkingAndGarageRepository::class)]
-class HomeTypeOfParkingAndGarage
+#[ORM\Entity(repositoryClass: PropertyTypeOfParkingAndGarageRepository::class)]
+class PropertyTypeOfParkingAndGarage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,7 @@ class HomeTypeOfParkingAndGarage
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?string $name = null;
 
     #[ORM\Column]
@@ -29,19 +29,19 @@ class HomeTypeOfParkingAndGarage
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'TypeOfGarage')]
-    private Collection $homesWithGarage;
+    #[ORM\OneToMany(targetEntity: Property::class, mappedBy: 'TypeOfGarage')]
+    private Collection $propertiesWithGarage;
 
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'TypeOfParking')]
-    private Collection $homesWithParking;
+    #[ORM\OneToMany(targetEntity: Property::class, mappedBy: 'TypeOfParking')]
+    private Collection $propertiesWithParking;
 
     public function __construct()
     {
-        $this->homesWithGarage = new ArrayCollection();
-        $this->homesWithParking = new ArrayCollection();
+        $this->propertiesWithGarage = new ArrayCollection();
+        $this->propertiesWithParking = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,27 +88,27 @@ class HomeTypeOfParkingAndGarage
     /**
      * @return Collection<int, Home>
      */
-    public function getHomesWithGarage(): Collection
+    public function getPropertiesWithGarage(): Collection
     {
-        return $this->homesWithGarage;
+        return $this->propertiesWithGarage;
     }
 
-    public function addHomeWithGarage(Home $home): static
+    public function addPropertyWithGarage(Property $property): static
     {
-        if (!$this->homesWithGarage->contains($home)) {
-            $this->homesWithGarage->add($home);
-            $home->setTypeOfGarage($this);
+        if (!$this->propertiesWithGarage->contains($property)) {
+            $this->propertiesWithGarage->add($property);
+            $property->setTypeOfGarage($this);
         }
 
         return $this;
     }
 
-    public function removeHomeWithGarage(Home $home): static
+    public function removeHomeWithGarage(Property $property): static
     {
-        if ($this->homesWithGarage->removeElement($home)) {
+        if ($this->propertiesWithGarage->removeElement($property)) {
             // set the owning side to null (unless already changed)
-            if ($home->getTypeOfGarage() === $this) {
-                $home->setTypeOfGarage(null);
+            if ($property->getTypeOfGarage() === $this) {
+                $property->setTypeOfGarage(null);
             }
         }
 
@@ -118,25 +118,25 @@ class HomeTypeOfParkingAndGarage
     /**
      * @return Collection<int, Home>
      */
-    public function getHomesWithParking(): Collection
+    public function getPropertiesWithParking(): Collection
     {
-        return $this->homesWithParking;
+        return $this->propertiesWithParking;
     }
-    public function addHomeWithParking(Home $home): static
+    public function addPropertyWithParking(Property $property): static
     {
-        if (!$this->homesWithParking->contains($home)) {
-            $this->homesWithParking->add($home);
-            $home->setTypeOfParking($this);
+        if (!$this->propertiesWithParking->contains($property)) {
+            $this->propertiesWithParking->add($property);
+            $property->setTypeOfParking($this);
         }
 
         return $this;
     }    
-    public function removeHomeWithParking(Home $home): static
+    public function removeHomeWithParking(Property $property): static
     {
-        if ($this->homesWithParking->removeElement($home)) {
+        if ($this->propertiesWithParking->removeElement($property)) {
             // set the owning side to null (unless already changed)
-            if ($home->getTypeOfParking() === $this) {
-                $home->setTypeOfParking(null);
+            if ($property->getTypeOfParking() === $this) {
+                $property->setTypeOfParking(null);
             }
         }
 

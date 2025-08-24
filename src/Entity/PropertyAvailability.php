@@ -6,7 +6,7 @@ use App\Repository\HomeAvailabilityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HomeAvailabilityRepository::class)]
-class HomeAvailability
+class PropertyAvailability
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,9 +22,9 @@ class HomeAvailability
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'homeAvailabilities')]
+    #[ORM\ManyToOne(inversedBy: 'propertyAvailabilities')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Home $home = null;
+    private ?Property $property = null;
 
     public function getId(): ?int
     {
@@ -67,14 +67,14 @@ class HomeAvailability
         return $this;
     }
 
-    public function getHome(): ?Home
+    public function getProperty(): ?Property
     {
-        return $this->home;
+        return $this->property;
     }
 
-    public function setHome(?Home $home): static
+    public function setHome(?Property $property): static
     {
-        $this->home = $home;
+        $this->property = $property;
 
         return $this;
     }

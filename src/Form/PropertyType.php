@@ -2,23 +2,23 @@
 
 namespace App\Form;
 
-use App\Entity\Home;
 use App\Entity\FloorLevel;
-use App\Entity\HomeEquipment;
+use App\Entity\Property;
+use App\Entity\PropertyEquipment;
 use Symfony\Component\Form\AbstractType;
-use App\Entity\HomeType as EntityHomeType;
-use App\Entity\HomeTypeOfParkingAndGarage;
+use App\Entity\PropertyType as EntityPropertyType;
+use App\Entity\PropertyTypeOfParkingAndGarage;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Repository\HomeTypeOfParkingAndGarageRepository;
+use App\Repository\PropertyTypeOfParkingAndGarageRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class HomeType extends AbstractType
+class PropertyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -113,7 +113,7 @@ class HomeType extends AbstractType
                 'required' => true,
             ])
             ->add('type', EntityType::class, [
-                'class' => EntityHomeType::class,
+                'class' => EntityPropertyType::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choisissez un type de logement',
                 'label' => 'Type de logement',
@@ -131,7 +131,7 @@ class HomeType extends AbstractType
                 ],
             ])
             ->add('equipments', EntityType::class, [
-                'class' => HomeEquipment::class,
+                'class' => PropertyEquipment::class,
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
@@ -144,7 +144,7 @@ class HomeType extends AbstractType
                 ]
             ])
             ->add('typeOfGarage', EntityType::class, [
-                'class' => HomeTypeOfParkingAndGarage::class,
+                'class' => PropertyTypeOfParkingAndGarage::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choisissez un type de garage',
                 'label' => 'Garage',
@@ -152,7 +152,7 @@ class HomeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ],
-                'query_builder' => function (HomeTypeOfParkingAndGarageRepository $er) {
+                'query_builder' => function (PropertyTypeOfParkingAndGarageRepository $er) {
                     return $er->createQueryBuilder('p')
                         ->where('p.isForGarageOnly = :val')
                         ->setParameter('val', true)
@@ -160,7 +160,7 @@ class HomeType extends AbstractType
                 },
             ])
             ->add('typeOfParking', EntityType::class, [
-                'class' => HomeTypeOfParkingAndGarage::class,
+                'class' => PropertyTypeOfParkingAndGarage::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choisissez un type de parking',
                 'label' => 'Parking',
@@ -168,7 +168,7 @@ class HomeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ],
-                'query_builder' => function (HomeTypeOfParkingAndGarageRepository $er) {
+                'query_builder' => function (PropertyTypeOfParkingAndGarageRepository $er) {
                     return $er->createQueryBuilder('p')
                         ->where('p.isForParkingOnly = :val')
                         ->setParameter('val', true)
@@ -180,7 +180,7 @@ class HomeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Home::class,
+            'data_class' => Property::class,
         ]);
     }
 }

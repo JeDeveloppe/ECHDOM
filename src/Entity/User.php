@@ -67,8 +67,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'owner')]
-    private Collection $homes;
+    #[ORM\OneToMany(targetEntity: Property::class, mappedBy: 'owner')]
+    private Collection $properties;
 
     /**
      * @var Collection<int, Exchange>
@@ -94,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->workplaces = new ArrayCollection();
-        $this->homes = new ArrayCollection();
+        $this->properties = new ArrayCollection();
         $this->exchangesProposed = new ArrayCollection();
         $this->exchangesReceiver = new ArrayCollection();
     }
@@ -297,27 +297,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Home>
      */
-    public function getHomes(): Collection
+    public function getProperties(): Collection
     {
-        return $this->homes;
+        return $this->properties;
     }
 
-    public function addHome(Home $home): static
+    public function addProperty(Property $property): static
     {
-        if (!$this->homes->contains($home)) {
-            $this->homes->add($home);
-            $home->setOwner($this);
+        if (!$this->properties->contains($property)) {
+            $this->properties->add($property);
+            $property->setOwner($this);
         }
 
         return $this;
     }
 
-    public function removeHome(Home $home): static
+    public function removeHome(Property $property): static
     {
-        if ($this->homes->removeElement($home)) {
+        if ($this->properties->removeElement($property)) {
             // set the owning side to null (unless already changed)
-            if ($home->getOwner() === $this) {
-                $home->setOwner(null);
+            if ($property->getOwner() === $this) {
+                $property->setOwner(null);
             }
         }
 

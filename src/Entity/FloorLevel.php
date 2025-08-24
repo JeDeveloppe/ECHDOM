@@ -17,18 +17,18 @@ class FloorLevel
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'floor')]
-    private Collection $homes;
+    #[ORM\OneToMany(targetEntity: Property::class, mappedBy: 'floor')]
+    private Collection $properties;
 
     public function __construct()
     {
-        $this->homes = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,27 +51,27 @@ class FloorLevel
     /**
      * @return Collection<int, Home>
      */
-    public function getHomes(): Collection
+    public function getProperties(): Collection
     {
-        return $this->homes;
+        return $this->properties;
     }
 
-    public function addHome(Home $home): static
+    public function addProperty(Property $property): static
     {
-        if (!$this->homes->contains($home)) {
-            $this->homes->add($home);
-            $home->setFloor($this);
+        if (!$this->properties->contains($property)) {
+            $this->properties->add($property);
+            $property->setFloor($this);
         }
 
         return $this;
     }
 
-    public function removeHome(Home $home): static
+    public function removeHome(Property $property): static
     {
-        if ($this->homes->removeElement($home)) {
+        if ($this->properties->removeElement($property)) {
             // set the owning side to null (unless already changed)
-            if ($home->getFloor() === $this) {
-                $home->setFloor(null);
+            if ($property->getFloor() === $this) {
+                $property->setFloor(null);
             }
         }
 

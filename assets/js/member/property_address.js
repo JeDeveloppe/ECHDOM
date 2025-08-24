@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // SÉLECTION DES ÉLÉMENTS DU FORMULAIRE
-    const form = document.getElementById('homeForm');
+    const form = document.getElementById('propertyForm');
     const addressInput = document.getElementById('home_address');
     const latitudeInput = document.getElementById('home_latitude');
     const longitudeInput = document.getElementById('home_longitude');
@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsContainer = document.getElementById('autocomplete-results');
     const submitButton = form.querySelector('button[type="submit"]');
 
-    // Vérifier si les éléments requis sont présents
     if (!form || !addressInput || !submitButton || !messageContainer || !resultsContainer) {
         console.error("Erreur : Un ou plusieurs éléments requis du formulaire n'a pas été trouvé.");
         return;
@@ -16,13 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let debounceTimeout;
 
-    // Fonction pour gérer la recherche d'adresse
+    // Fonction pour gérer la recherche d'adresse (utilisée uniquement pour l'autocomplétion)
     const searchAddress = async (query) => {
         if (query.length < 3) {
             resultsContainer.style.display = 'none';
             return;
         }
-
         try {
             const response = await fetch('/member/api/geocode?q=' + encodeURIComponent(query));
             if (!response.ok) {
@@ -51,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 suggestion.addEventListener('click', (e) => {
                     e.stopPropagation();
-
+                    // Les champs latitude et longitude sont remplis ici,
+                    // sans faire de nouvel appel API.
                     addressInput.value = result.label;
                     latitudeInput.value = suggestion.dataset.latitude;
                     longitudeInput.value = suggestion.dataset.longitude;
@@ -69,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Écouteur d'événement pour l'entrée utilisateur
     addressInput.addEventListener('input', () => {
         clearTimeout(debounceTimeout);
-        // Efface les champs latitude/longitude dès que l'utilisateur commence à taper
         latitudeInput.value = '';
         longitudeInput.value = '';
         
@@ -78,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
     
-    // Masquer les résultats lorsque l'utilisateur clique en dehors
     document.addEventListener('click', (e) => {
         if (!resultsContainer.contains(e.target) && e.target !== addressInput) {
             resultsContainer.style.display = 'none';
@@ -86,108 +83,94 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Gère la soumission du formulaire
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        messageContainer.innerHTML = '';
+    // form.addEventListener('submit', async (e) => {
+    //     e.preventDefault();
+    //     messageContainer.innerHTML = '';
 
-        if (!latitudeInput.value || !longitudeInput.value) {
-            messageContainer.innerHTML = `
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    Veuillez sélectionner une adresse dans la liste de suggestions.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-            return;
-        }
+    //     // VÉRIFIE SI LES CHAMPS SONT DÉJÀ REMPLIS PAR L'AUTOCOMPLÉTION.
+    //     // Aucune API de géocodage n'est appelée ici.
+    //     if (!latitudeInput.value || !longitudeInput.value) {
+    //         messageContainer.innerHTML = `
+    //             <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    //                 Veuillez sélectionner une adresse dans la liste de suggestions.
+    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    //             </div>
+    //         `;
+    //         return;
+    //     }
         
-        showLoadingState();
+    //     showLoadingState();
 
-        // Récupérer toutes les données du formulaire
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            // Pour les cases à cocher, gérer les valeurs booléennes
-            if (value === 'on') {
-                data[key] = true;
-            } else if (value === '') {
-                // S'assurer que les champs vides sont bien gérés comme des chaînes vides
-                data[key] = '';
-            } else {
-                data[key] = value;
-            }
-        });
+    //     const formData = new FormData(form);
+    //     const data = {};
+    //     formData.forEach((value, key) => {
+    //         if (value === 'on') {
+    //             data[key] = true;
+    //         } else if (value === '') {
+    //             data[key] = '';
+    //         } else {
+    //             data[key] = value;
+    //         }
+    //     });
 
-        // Les équipements sont gérés comme des tableaux dans Symfony, on doit les reconstruire.
-        // On cherche tous les équipements cochés
-        const equipments = [];
-        const checkedEquipments = form.querySelectorAll('input[type="checkbox"][name^="homeForm[equipments]"]:checked');
-        checkedEquipments.forEach(checkbox => {
-            // Extrait l'index de l'équipement (ex: [0], [1], etc.)
-            const name = checkbox.name;
-            const index = name.match(/\[(\d+)\]/)[1];
-            equipments.push(checkbox.value);
-        });
-        // Si la clé existe déjà (par exemple, si le formulaire est soumis deux fois), on l'écrase
-        data['homeForm[equipments]'] = equipments;
+    //     const equipments = [];
+    //     const checkedEquipments = form.querySelectorAll('input[type="checkbox"][name^="propertyForm[equipments]"]:checked');
+    //     checkedEquipments.forEach(checkbox => {
+    //         const name = checkbox.name;
+    //         const index = name.match(/\[(\d+)\]/)[1];
+    //         equipments.push(checkbox.value);
+    //     });
+    //     data['propertyForm[equipments]'] = equipments;
 
-        try {
-            const response = await fetch(form.action, {
-                method: form.method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
+    //     try {
+    //         const response = await fetch(form.action, {
+    //             method: form.method,
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(data)
+    //         });
 
-            // GESTION AMÉLIORÉE DE LA RÉPONSE
-            let result;
-            try {
-                // Tenter de lire la réponse comme du JSON
-                result = await response.json();
-            } catch (jsonError) {
-                // Si la réponse n'est pas du JSON valide, lire comme du texte
-                const errorText = await response.text();
-                // Afficher l'erreur dans la console pour le débogage
-                console.error("Erreur de format de réponse. Réponse du serveur :", errorText);
-                // Créer un objet d'erreur générique
-                result = { error: "Erreur serveur. La réponse n'est pas un format valide." };
-            }
+    //         let result;
+    //         try {
+    //             result = await response.json();
+    //         } catch (jsonError) {
+    //             const errorText = await response.text();
+    //             console.error("Erreur de format de réponse. Réponse du serveur :", errorText);
+    //             result = { error: "Erreur serveur. La réponse n'est pas un format valide." };
+    //         }
 
-            if (response.ok) {
-                messageContainer.innerHTML = `
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        Bien mis à jour avec succès !
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
-                
-            } else {
-                // Utiliser la propriété `error` du JSON ou un message par défaut
-                messageContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Erreur : ${result.error || 'Une erreur inconnue est survenue.'}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
-                console.error('Erreur de soumission:', result.error);
-            }
-        } catch (error) {
-            messageContainer.innerHTML = `
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Erreur réseau. Veuillez réessayer.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-            console.error('Erreur réseau ou du serveur:', error);
-        } finally {
-            hideLoadingState();
-        }
-    });
+    //         if (response.ok) {
+    //             messageContainer.innerHTML = `
+    //                 <div class="alert alert-success alert-dismissible fade show" role="alert">
+    //                     Bien mis à jour avec succès !
+    //                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    //                 </div>
+    //             `;
+    //         } else {
+    //             messageContainer.innerHTML = `
+    //                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    //                     Erreur : ${result.error || 'Une erreur inconnue est survenue.'}
+    //                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    //                 </div>
+    //             `;
+    //             console.error('Erreur de soumission:', result.error);
+    //         }
+    //     } catch (error) {
+    //         messageContainer.innerHTML = `
+    //             <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    //                 Erreur réseau. Veuillez réessayer.
+    //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    //             </div>
+    //         `;
+    //         console.error('Erreur réseau ou du serveur:', error);
+    //     } finally {
+    //         hideLoadingState();
+    //     }
+    // });
 
-    // Fonctions pour gérer l'état de chargement du bouton
     const showLoadingState = () => {
         submitButton.disabled = true;
-        // On utilise un sélecteur plus précis pour les icônes
         const saveIcon = submitButton.querySelector('#saveIcon');
         const loadingIcon = submitButton.querySelector('#loadingIcon');
         const buttonText = submitButton.querySelector('#buttonText');
@@ -199,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hideLoadingState = () => {
         submitButton.disabled = false;
-        // On utilise un sélecteur plus précis pour les icônes
         const saveIcon = submitButton.querySelector('#saveIcon');
         const loadingIcon = submitButton.querySelector('#loadingIcon');
         const buttonText = submitButton.querySelector('#buttonText');

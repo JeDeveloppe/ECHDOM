@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Home;
-use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\HomeAvailability;
+use App\Entity\Property;
+use App\Entity\PropertyAvailability;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<HomeAvailability>
  */
-class HomeAvailabilityRepository extends ServiceEntityRepository
+class PropertyAvailabilityRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, HomeAvailability::class);
+        parent::__construct($registry, PropertyAvailability::class);
     }
 
     /**
      * @return HomeAvailability[]
      */
-    public function findAvailabilitiesForHomeAndPeriod(Home $home, DateTimeImmutable $startAt, DateTimeImmutable $endAt): array
+    public function findAvailabilitiesForHomeAndPeriod(Property $property, DateTimeImmutable $startAt, DateTimeImmutable $endAt): array
     {
         // Use withTime() instead of setTime() for immutable DateTime objects.
         // This method is safer as it always returns a new DateTimeImmutable object,
@@ -31,13 +31,13 @@ class HomeAvailabilityRepository extends ServiceEntityRepository
         $endAtEndOfDay = $endAt->setTime(23, 59, 59);
 
     
-        return $this->createQueryBuilder('ha')
-            ->where('ha.home = :home')
-            ->andWhere('ha.startAt >= :startAt')
-            ->andWhere('ha.endAt <= :endAt')
+        return $this->createQueryBuilder('pa')
+            ->where('pa.property = :property')
+            ->andWhere('pa.startAt >= :startAt')
+            ->andWhere('pa.endAt <= :endAt')
             ->setParameter('startAt', $startAtMidnight)
             ->setParameter('endAt', $endAtEndOfDay)
-            ->setParameter('home', $home)
+            ->setParameter('property', $property)
             ->getQuery()
             ->getResult();
     }

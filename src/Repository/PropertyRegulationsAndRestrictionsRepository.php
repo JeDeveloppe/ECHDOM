@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\HomeTypeOfParkingAndGarage;
+use App\Entity\PropertyRegulationsAndRestrictions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<HomeTypeOfParkingAndGarage>
+ * @extends ServiceEntityRepository<HomeRegulationsAndRestrictions>
  */
-class HomeTypeOfParkingAndGarageRepository extends ServiceEntityRepository
+class PropertyRegulationsAndRestrictionsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, HomeTypeOfParkingAndGarage::class);
+        parent::__construct($registry, PropertyRegulationsAndRestrictions::class);
     }
 
     //    /**
-    //     * @return HomeTypeOfParkingAndGarage[] Returns an array of HomeTypeOfParkingAndGarage objects
+    //     * @return HomeRegulationsAndRestrictions[] Returns an array of HomeRegulationsAndRestrictions objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class HomeTypeOfParkingAndGarageRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?HomeTypeOfParkingAndGarage
+    //    public function findOneBySomeField($value): ?HomeRegulationsAndRestrictions
     //    {
     //        return $this->createQueryBuilder('h')
     //            ->andWhere('h.exampleField = :val')

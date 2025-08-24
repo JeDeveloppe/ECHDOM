@@ -3,9 +3,6 @@
 namespace App\Service;
 
 use App\Entity\GeolocatableInterface;
-use App\Entity\Home;
-use App\Entity\HomeType;
-use Dom\Entity;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Point;
 use Symfony\UX\Map\Marker;
@@ -87,7 +84,7 @@ class MapsService
      * Ajoute un marqueur spécifique à la carte.
      *
      * @param Map $map La carte à laquelle ajouter le marqueur.
-     * @param Home $home L'entité contenant les informations du marqueur.
+     * @param Property $property L'entité contenant les informations du marqueur.
      * @param string $typeOfPlace Type de lieu (par exemple, "workplaces, users").
      * @param ?string $color Couleur de l'icône (optionnel).
      * @return Map

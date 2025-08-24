@@ -4,13 +4,13 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\HomeRepository;
+use App\Repository\PropertyRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: HomeRepository::class)]
-class Home implements GeolocatableInterface
+#[ORM\Entity(repositoryClass: PropertyRepository::class)]
+class Property implements GeolocatableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,44 +26,44 @@ class Home implements GeolocatableInterface
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
     private ?string $longitude = null;
 
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'homes')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['home:details'])]
-    private ?HomeType $type = null;
+    #[Groups(['property:details'])]
+    private ?PropertyType $type = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2)]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?string $surface = null;
 
     #[ORM\Column]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?int $rooms = null;
 
     #[ORM\Column]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?int $bedrooms = null;
 
     #[ORM\Column]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?int $bathrooms = null;
 
     #[ORM\ManyToOne(inversedBy: 'homes')]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?FloorLevel $floor = null;
 
     #[ORM\Column]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?bool $hasElevator = null;
 
     #[ORM\Column]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?bool $hasBalcony = null;
 
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?int $timeTravelBetweenHomeAndWorkplace = null; // Ajout d'une propriété pour le temps de trajet
 
     /**
@@ -75,18 +75,18 @@ class Home implements GeolocatableInterface
     /**
      * @var Collection<int, HomeEquipment>
      */
-    #[ORM\ManyToMany(targetEntity: HomeEquipment::class, inversedBy: 'homes')]
-    #[Groups(['home:details'])]
+    #[ORM\ManyToMany(targetEntity: PropertyEquipment::class, inversedBy: 'homes')]
+    #[Groups(['property:details'])]
     private Collection $equipments;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['home:details'])]
+    #[Groups(['property:details'])]
     private ?string $otherRules = null;
 
     /**
      * @var Collection<int, HomeRegulationsAndRestrictions>
      */
-    #[ORM\ManyToMany(targetEntity: HomeRegulationsAndRestrictions::class, inversedBy: 'homes')]
+    #[ORM\ManyToMany(targetEntity: PropertyRegulationsAndRestrictions::class, inversedBy: 'homes')]
     private Collection $rules;
 
     #[ORM\ManyToOne(inversedBy: 'homes')]
@@ -94,29 +94,29 @@ class Home implements GeolocatableInterface
     private ?User $owner = null;
 
     #[ORM\Column]
-    private ?bool $hasGarage = null;
+    private ?bool $hasGarage = false;
 
     #[ORM\Column]
-    private ?bool $hasParking = null;
+    private ?bool $hasParking = false;
 
     #[ORM\ManyToOne(inversedBy: 'homesWithGarage')]
-    private ?HomeTypeOfParkingAndGarage $TypeOfGarage = null;
+    private ?PropertyTypeOfParkingAndGarage $TypeOfGarage = null;
 
     #[ORM\ManyToOne(inversedBy: 'homesWithParking')]
-    private ?HomeTypeOfParkingAndGarage $TypeOfParking = null;
+    private ?PropertyTypeOfParkingAndGarage $TypeOfParking = null;
 
     /**
      * @var Collection<int, HomeAvailability>
      */
-    #[ORM\OneToMany(targetEntity: HomeAvailability::class, mappedBy: 'home', orphanRemoval: true)]
-    private Collection $homeAvailabilities;
+    #[ORM\OneToMany(targetEntity: PropertyAvailability::class, mappedBy: 'home', orphanRemoval: true)]
+    private Collection $propertyAvailabilities;
 
     public function __construct()
     {
         $this->photos = new ArrayCollection();
         $this->equipments = new ArrayCollection();
         $this->rules = new ArrayCollection();
-        $this->homeAvailabilities = new ArrayCollection();
+        $this->propertyAvailabilities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,12 +172,12 @@ class Home implements GeolocatableInterface
         return $this;
     }
 
-    public function getType(): ?HomeType
+    public function getType(): ?PropertyType
     {
         return $this->type;
     }
 
-    public function setType(?HomeType $type): static
+    public function setType(?PropertyType $type): static
     {
         $this->type = $type;
 
@@ -290,7 +290,7 @@ class Home implements GeolocatableInterface
     {
         if ($this->photos->removeElement($photo)) {
             // set the owning side to null (unless already changed)
-            if ($photo->getHome() === $this) {
+            if ($photo->getProperty() === $this) {
                 $photo->setHome(null);
             }
         }
@@ -306,7 +306,7 @@ class Home implements GeolocatableInterface
         return $this->equipments;
     }
 
-    public function addEquipment(HomeEquipment $equipment): static
+    public function addEquipment(PropertyEquipment $equipment): static
     {
         if (!$this->equipments->contains($equipment)) {
             $this->equipments->add($equipment);
@@ -315,7 +315,7 @@ class Home implements GeolocatableInterface
         return $this;
     }
 
-    public function removeEquipment(HomeEquipment $equipment): static
+    public function removeEquipment(PropertyEquipment $equipment): static
     {
         $this->equipments->removeElement($equipment);
 
@@ -342,7 +342,7 @@ class Home implements GeolocatableInterface
         return $this->rules;
     }
 
-    public function addRule(HomeRegulationsAndRestrictions $rule): static
+    public function addRule(PropertyRegulationsAndRestrictions $rule): static
     {
         if (!$this->rules->contains($rule)) {
             $this->rules->add($rule);
@@ -351,7 +351,7 @@ class Home implements GeolocatableInterface
         return $this;
     }
 
-    public function removeRule(HomeRegulationsAndRestrictions $rule): static
+    public function removeRule(PropertyRegulationsAndRestrictions $rule): static
     {
         $this->rules->removeElement($rule);
 
@@ -405,24 +405,24 @@ class Home implements GeolocatableInterface
         return $this;
     }
 
-    public function getTypeOfGarage(): ?HomeTypeOfParkingAndGarage
+    public function getTypeOfGarage(): ?PropertyTypeOfParkingAndGarage
     {
         return $this->TypeOfGarage;
     }
 
-    public function setTypeOfGarage(?HomeTypeOfParkingAndGarage $TypeOfGarage): static
+    public function setTypeOfGarage(?PropertyTypeOfParkingAndGarage $TypeOfGarage): static
     {
         $this->TypeOfGarage = $TypeOfGarage;
 
         return $this;
     }
 
-    public function getTypeOfParking(): ?HomeTypeOfParkingAndGarage
+    public function getTypeOfParking(): ?PropertyTypeOfParkingAndGarage
     {
         return $this->TypeOfParking;
     }
 
-    public function setTypeOfParking(?HomeTypeOfParkingAndGarage $TypeOfParking): static
+    public function setTypeOfParking(?PropertyTypeOfParkingAndGarage $TypeOfParking): static
     {
         $this->TypeOfParking = $TypeOfParking;
 
@@ -432,27 +432,27 @@ class Home implements GeolocatableInterface
     /**
      * @return Collection<int, HomeAvailability>
      */
-    public function getHomeAvailabilities(): Collection
+    public function getPropertyAvailabilities(): Collection
     {
-        return $this->homeAvailabilities;
+        return $this->propertyAvailabilities;
     }
 
-    public function addHomeAvailability(HomeAvailability $homeAvailability): static
+    public function addPropertyAvailability(PropertyAvailability $propertyAvailability): static
     {
-        if (!$this->homeAvailabilities->contains($homeAvailability)) {
-            $this->homeAvailabilities->add($homeAvailability);
-            $homeAvailability->setHome($this);
+        if (!$this->propertyAvailabilities->contains($propertyAvailability)) {
+            $this->propertyAvailabilities->add($propertyAvailability);
+            $propertyAvailability->setHome($this);
         }
 
         return $this;
     }
 
-    public function removeHomeAvailability(HomeAvailability $homeAvailability): static
+    public function removeHomeAvailability(PropertyAvailability $propertyAvailability): static
     {
-        if ($this->homeAvailabilities->removeElement($homeAvailability)) {
+        if ($this->propertyAvailabilities->removeElement($propertyAvailability)) {
             // set the owning side to null (unless already changed)
-            if ($homeAvailability->getHome() === $this) {
-                $homeAvailability->setHome(null);
+            if ($propertyAvailability->getProperty() === $this) {
+                $propertyAvailability->setHome(null);
             }
         }
 
