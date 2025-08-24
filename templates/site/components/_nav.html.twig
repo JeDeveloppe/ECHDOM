@@ -20,7 +20,7 @@
                         <span class="fw-semibold">Bonjour {{ app.user.firstName|default(app.user.email) }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
-                        <li><a class="dropdown-item" href="{{ path('user_dashboard') }}"><i class="fas fa-user me-2"></i> Mon tableau de bord</a></li>
+                        <li><a class="dropdown-item" href="{{ path('member_dashboard') }}"><i class="fas fa-user me-2"></i> Mon tableau de bord</a></li>
                         <li><a class="dropdown-item" href="#"><i class="fas fa-sync-alt me-2"></i> Mes échanges</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>

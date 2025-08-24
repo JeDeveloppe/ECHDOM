@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         data[key] = value;
                     });
     
-                    const url = '/user/api/workplace/update';
+                    const url = '/member/api/workplace/update';
     
                     console.log('--- Début de la soumission du formulaire ---');
                     console.log('URL de la requête :', url);
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         timeout = setTimeout(async () => {
                             console.log("Délai de recherche terminé, envoi de la requête à l'API.");
                             try {
-                                const response = await fetch(`/user/api/geocode/search?q=${encodeURIComponent(query)}`);
+                                const response = await fetch(`/member/api/geocode/search?q=${encodeURIComponent(query)}`);
                                 const result = await response.json();
     
                                 console.log('Résultat de l\'API:', result);

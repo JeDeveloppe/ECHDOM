@@ -1,0 +1,63 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Mon bien à l'échange{% endblock %}
+
+{% block nav %}
+   {% include "member/components/_nav.html.twig" %}
+{% endblock %}
+
+{% block body %}   
+    <div class="container">
+        <!-- Titre et sous-titre de la page -->
+        <div class="row mb-4">
+            <div class="col-12 text-center pt-5">
+                <h1 class="fw-bold text-primary display-4">Gestion d'un bien</h1>
+                <p class="lead text-muted">
+                    Renseignez les informations de votre bien.
+                </p>
+            </div>
+        </div>
+
+        <!-- Conteneur des onglets -->
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Navigation par onglets -->
+                <ul class="nav nav-tabs nav-fill mb-0 border-0" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-info" type="button" role="tab" aria-controls="home-info" aria-selected="true">
+                            <i class="fas fa-info-circle tab-icon"></i>
+                            Informations principales
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="availability-tab" data-bs-toggle="tab" data-bs-target="#availability" type="button" role="tab" aria-controls="availability" aria-selected="false">
+                            <i class="fas fa-calendar-alt tab-icon"></i>
+                            Gestion des disponibilités
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Contenu des onglets -->
+                <div class="tab-content" id="myTabContent">
+                    
+                    <!-- Onglet des informations principales du bien -->
+                    <div class="tab-pane fade show active" id="home-info" role="tabpanel" aria-labelledby="home-tab">
+                        {% include "member/components/_my_property_in_exchange_tab_infos.html.twig" %}
+                    </div>
+
+                    <!-- Nouvel onglet pour les disponibilités (inclus le formulaire de récurrence) -->
+                    <div class="tab-pane fade" id="availability" role="tabpanel" aria-labelledby="availability-tab">
+                        {% include "member/components/_my_property_in_exchange_tab_availbilities.html.twig" with {'availabilityForm': availabilityForm} %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/member/property_address.js') }}"></script>
+{% endblock %}

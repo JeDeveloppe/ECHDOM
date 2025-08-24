@@ -11,6 +11,12 @@
                             <i class="fas fa-arrow-left me-2"></i>Retourner au site
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('member_dashboard') }}">Tableau de bord</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('member_properties') }}">Mes biens</a>
+                    </li>
                 </ul>
                 <div class="d-flex gap-2 ms-auto align-items-center">
                     <div class="dropdown">
@@ -19,7 +25,7 @@
                             <span class="fw-semibold">Bonjour {{ app.user.firstName|default(app.user.email) }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
-                            <li><a class="dropdown-item" href="{{ path('user_dashboard') }}"><i class="fas fa-user me-2"></i> Mon tableau de bord</a></li>
+                            <li><a class="dropdown-item" href="{{ path('member_dashboard') }}"><i class="fas fa-user me-2"></i> Mon tableau de bord</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-sync-alt me-2"></i> Mes échanges</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
@@ -30,22 +36,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-    </nav>
-   <!-- Barre de navigation secondaire pour les biens -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-dark py-2 shadow-sm">
-        <div class="container">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ path('user_homes') }}">Mes biens</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ajouter un bien</a>
-                    </li>
-                    <!-- Vous pouvez ajouter d'autres liens ici -->
-                </ul>
             </div>
         </div>
     </nav>

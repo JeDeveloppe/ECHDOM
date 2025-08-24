@@ -9,15 +9,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserWorkplaceChoiceType extends AbstractType
+class FullAddressType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('address', TextType::class, [
-                'label' => 'Adresse du lieu de travail',
+                'label' => false,
                 'attr' => [
-                    'placeholder' => 'Entrez l\'adresse de votre lieu de travail',
+                    'placeholder' => 'Entrez une adresse complête',
                 ],
             ])
             ->add('latitude', HiddenType::class, [

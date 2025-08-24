@@ -17,12 +17,12 @@ class HomeAvailabilityFormType extends AbstractType
             ->add('startAt', DateType::class, [
                 'widget' => 'single_text',
                 'required' => true,
-                'label' => 'Date de début (à midi)',
+                'label' => 'Date de début (à '.$_ENV['HOME_AVAILABILITY_START_HOUR'].')',
             ])
             ->add('endAt', DateType::class, [
                 'widget' => 'single_text',
                 'required' => true,
-                'label' => 'Récurrence jusqu\'au (à midi)',
+                'label' => 'Récurrence jusqu\'au (à '.$_ENV['HOME_AVAILABILITY_END_HOUR'].')',
             ])
             ->add('weeklyDays', ChoiceType::class, [
                 'choices' => [
@@ -30,13 +30,10 @@ class HomeAvailabilityFormType extends AbstractType
                     'Mardi' => 2,
                     'Mercredi' => 3,
                     'Jeudi' => 4,
-                    'Vendredi' => 5,
-                    'Samedi' => 6,
-                    'Dimanche' => 7,
                 ],
                 'expanded' => true,
                 'multiple' => true,
-                'required' => false,
+                'required' => true,
                 'label' => 'Jours de la semaine',
                 'mapped' => false,
             ]);

@@ -3,10 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Home;
-use App\Entity\HomeFloor;
 use App\Entity\FloorLevel;
 use App\Entity\HomeEquipment;
-use App\Entity\HomeTypeOfHome;
 use Symfony\Component\Form\AbstractType;
 use App\Entity\HomeType as EntityHomeType;
 use App\Entity\HomeTypeOfParkingAndGarage;
@@ -14,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Repository\HomeTypeOfParkingAndGarageRepository;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -77,6 +77,18 @@ class HomeType extends AbstractType
                     'class' => 'form-check-input',
                 ],
                 'required' => false,
+            ])
+            ->add('address', TextType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Entrez une adresse complête',
+                ],
+            ])
+            ->add('latitude', HiddenType::class, [
+                'label' => 'Latitude',
+            ])
+            ->add('longitude', HiddenType::class, [
+                'label' => 'Longitude',
             ])
             // ->add('hasGarage', CheckboxType::class, [
             //     'label' => 'Garage disponible',

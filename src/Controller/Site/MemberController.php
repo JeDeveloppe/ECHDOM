@@ -11,7 +11,7 @@ use DateTimeImmutable;
 use App\Entity\Workplace;
 use App\Entity\HomeAvailability;
 use App\Service\GeocodingService;
-use App\Form\UserWorkplaceChoiceType;
+use App\Form\FullAddressType;
 use App\Form\HomeAvailabilityFormType;
 use App\Repository\HomeAvailabilityRepository;
 use App\Repository\HomeRepository;
@@ -24,9 +24,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/user' , name: 'user')]
+#[Route('/member' , name: 'member')]
 #[IsGranted('ROLE_USER')]
-class UserController extends AbstractController
+class MemberController extends AbstractController
 {
 
     public function __construct(
@@ -45,7 +45,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
         $workplace = $user->getWorkplaces()->first() ?: new Workplace();
 
-        $workplaceForm = $this->createForm(UserWorkplaceChoiceType::class, $workplace);
+        $workplaceForm = $this->createForm(FullAddressType::class, $workplace);
         $workplaceForm->handleRequest($request);
 
         // Cette méthode gère le cas où le formulaire est soumis de manière "traditionnelle"
@@ -57,24 +57,25 @@ class UserController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Lieu de travail mis à jour.');
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('member_dashboard');
         }
 
-        return $this->render('site/user/dashboard.html.twig', [
+        return $this->render('member/dashboard.html.twig', [
             'workplaceForm' => $workplaceForm->createView(),
         ]);
     }
 
-    #[Route('/mes-biens', name: '_homes', methods: ['GET'])]
+    #[Route('/mes-biens', name: '_properties', methods: ['GET'])]
     public function listUserHomes(): Response
     {
         // Récupère la collection de tous les biens immobiliers de l'utilisateur
         $homes = $this->getUser()->getHomes();
 
-        return $this->render('site/user/list_homes.html.twig', [
+        return $this->render('member/properties.html.twig', [
             'homes' => $homes,
         ]);
     }
+
     /**
      * Endpoint API pour la recherche d'adresses avec le service de géocodage.
      * Appelé par le JavaScript pour l'autocomplétion.
@@ -103,7 +104,7 @@ class UserController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         // Crée le formulaire et le soumet avec les données JSON
-        $form = $this->createForm(UserWorkplaceChoiceType::class, $workplace);
+        $form = $this->createForm(FullAddressType::class, $workplace);
         $form->submit($data, true);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -135,7 +136,7 @@ class UserController extends AbstractController
 
         if (!$home) {
             $this->addFlash('warning', 'Bien immobilier non trouvé.');
-            return $this->redirectToRoute('user_home_list');
+            return $this->redirectToRoute('member_properties');
         }
 
         $form = $this->createForm(HomeType::class, $home);
@@ -156,74 +157,35 @@ class UserController extends AbstractController
 
             $startAtImmutable = \DateTimeImmutable::createFromMutable($startAt);
             $endAtImmutable = \DateTimeImmutable::createFromMutable($endAt);
+
+             // --- VALIDATION CÔTÉ SERVEUR SUPPLÉMENTAIRE ---
+            // Vérifier que les dates ne sont pas un vendredi (5), un samedi (6) ou un dimanche (0)
+            if ($startAt->format('w') == 5 || $startAt->format('w') == 6 || $startAt->format('w') == 0) {
+                // Ajouter une erreur au formulaire si la date de début est invalide
+                $this->addFlash('error', 'La date de début ne peut pas être un vendredi, un samedi ou un dimanche.');
+                return $this->redirectToRoute('_my_property_in_exchange', ['id' => $home->getId(), '_fragment' => 'availabilities']);
+            }
+            if ($endAt->format('w') == 5 || $endAt->format('w') == 6 || $endAt->format('w') == 0) {
+                // Ajouter une erreur au formulaire si la date de fin est invalide
+                $this->addFlash('error', 'La date de fin ne peut pas être un vendredi, un samedi ou un dimanche.');
+                return $this->redirectToRoute('_my_property_in_exchange', ['id' => $home->getId(), '_fragment' => 'availabilities']);
+            }
+            // --- FIN DE LA VALIDATION CÔTÉ SERVEUR ---
             
             // Appel du service pour gérer la logique de disponibilité
             $this->homeAvailabilityService->handleAvailability($home, $startAtImmutable, $endAtImmutable, $weeklyDays);
 
             $this->addFlash('success', 'Vos disponibilités ont été enregistrées avec succès !');
 
-            return $this->redirectToRoute('user_my_property_in_exchange', ['id' => $home->getId()]);
+            return $this->redirectToRoute('member_my_property_in_exchange', ['id' => $home->getId()]);
         }
 
-        return $this->render('site/user/my_property_in_exchange.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('member/my_property_in_exchange.html.twig', [
+            'homeForm' => $form->createView(),
             'availabilityForm' => $availabilityForm->createView(),
             'isEditMode' => true,
             'home' => $home,
+            'disable_turbo' => true, // Désactive Turbo pour ce formulaire
         ]);
-    }
-
-    /**
-     * @Route("/home/{id}/availability", name="app_home_add_availability", methods={"POST"})
-     */
-    #[Route('/api/home/{id}/availability', name: 'api_home_add_availability', methods: ['POST'])]
-    public function addAvailability(Request $request, Home $home, EntityManagerInterface $entityManager): Response
-    {
-        // On crée une instance de notre nouveau formulaire
-        $form = $this->createForm(HomeAvailabilityFormType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            if ($data['isRecurring']) {
-                // Logique pour la récurrence
-                $endDate = $data['recurrenceEndAt'];
-                $weeklyDays = $data['weeklyDays'];
-                $recurrenceType = $data['recurrenceType'];
-                
-                $currentDate = new \DateTime();
-
-                while ($currentDate <= $endDate) {
-                    if ($recurrenceType === 'weekly' && in_array($currentDate->format('w'), $weeklyDays)) {
-                        $availability = new HomeAvailability();
-                        $availability->setHome($home);
-                        $availability->setStartAt(\DateTimeImmutable::createFromMutable($currentDate));
-                        $availability->setEndAt(\DateTimeImmutable::createFromMutable($currentDate));
-                        $entityManager->persist($availability);
-                    }
-                    // TODO: Implémenter la logique pour le type 'monthly'
-                    
-                    // Incrémenter la date
-                    $currentDate->modify('+1 day');
-                }
-            } else {
-                // Logique pour une date unique
-                $availability = new HomeAvailability();
-                $availability->setHome($home);
-                $availability->setStartAt(\DateTimeImmutable::createFromMutable($data['startAt']));
-                $availability->setEndAt(\DateTimeImmutable::createFromMutable($data['endAt']));
-                $entityManager->persist($availability);
-            }
-            
-            $entityManager->flush();
-            $this->addFlash('success', 'Vos disponibilités ont bien été ajoutées !');
-            return $this->redirectToRoute('app_home_edit', ['id' => $home->getId()]);
-        }
-
-        // Si le formulaire n'est pas valide, on peut retourner une erreur
-        // (bien que le JS devrait l'empêcher pour l'utilisateur final)
-        $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout des disponibilités.');
-        return $this->redirectToRoute('app_home_edit', ['id' => $home->getId()]);
     }
 }

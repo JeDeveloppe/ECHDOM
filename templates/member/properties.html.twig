@@ -3,7 +3,7 @@
 {% block title %}Mes biens à l'échange{% endblock %}
 
 {% block nav %}
-    {% include "site/user/_nav_user.html.twig" %}
+    {% include "member/components/_nav.html.twig" %}
 {% endblock %}
 
 {% block body %}
@@ -31,7 +31,7 @@
                                     </li>
                                 </ul>
                                 <div class="mt-auto text-center">
-                                    <a href="{{ path('user_my_property_in_exchange', {id: home.id}) }}" class="btn btn-primary w-100">
+                                    <a href="{{ path('member_my_property_in_exchange', {id: home.id}) }}" class="btn btn-primary w-100">
                                         Voir les détails
                                     </a>
                                 </div>
