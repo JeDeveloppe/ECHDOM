@@ -1,0 +1,32 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Ajouter un bien{% endblock %}
+
+{% block nav %}
+    {% include "member/components/_nav.html.twig" %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center pt-5">
+                <h1 class="fw-bold text-primary display-4">Gestion d'un bien</h1>
+                <p class="lead text-muted">
+                    Ajouter un nouveau bien à votre compte.
+                </p>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    {% include "member/components/_propertyForm.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/member/property_address.js') }}"></script>
+{% endblock %}

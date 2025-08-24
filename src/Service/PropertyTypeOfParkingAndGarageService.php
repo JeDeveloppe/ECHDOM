@@ -2,17 +2,16 @@
 
 namespace App\Service;
 
-use App\Entity\Home;
-use App\Entity\HomeTypeOfParkingAndGarage;
+use App\Entity\PropertyTypeOfParkingAndGarage;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\HomeTypeOfParkingAndGarageRepository;
+use App\Repository\PropertyTypeOfParkingAndGarageRepository;
 
-class HomeTypeOfParkingAndGarageService
+class PropertyTypeOfParkingAndGarageService
 {
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private HomeTypeOfParkingAndGarageRepository $repository,
+        private PropertyTypeOfParkingAndGarageRepository $repository,
     )
     {
     }
@@ -33,7 +32,7 @@ class HomeTypeOfParkingAndGarageService
 
             // Si l'équipement n'existe pas, on le crée
             if (!$entity) {
-                $entity = new HomeTypeOfParkingAndGarage();
+                $entity = new PropertyTypeOfParkingAndGarage();
             }
             
             $entity->setName($element['name']);

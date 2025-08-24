@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\Home;
+use App\Entity\Property;
 use App\Entity\Workplace;
-use App\Repository\HomeRepository;
+use App\Repository\PropertyRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -14,7 +14,7 @@ class LengthAndTimeTravelService
     private const ROUTING_API_URL = 'https://api.tomtom.com/routing/1/calculateRoute/'; // Remplacez par votre API de routage
 
     public function __construct(
-        private HomeRepository $homeRepository,
+        private PropertyRepository $propertyRepository,
         private HttpClientInterface $client,
         private Security $security, // Ajout de la sécurité pour vérifier l'utilisateur
         )
@@ -32,7 +32,7 @@ class LengthAndTimeTravelService
     public function findNearbyHomesByTravelTime(Workplace $workplace, int $maxTravelTimeMinutes, int $radiusKm = 300): array
     {
         // 1. Première étape: filtrage initial par distance à vol d'oiseau pour réduire la charge.
-        $nearbyHomes = $this->homeRepository->findHomesNearWorkplace(
+        $nearbyHomes = $this->propertyRepository->findPropertiesNearWorkplace(
             $workplace,
             $radiusKm
         );
@@ -64,12 +64,12 @@ class LengthAndTimeTravelService
         // return $validHomes;
     }
 
-    public function getDistancesBeetweenTwoGpsPoints(Home $home, Workplace $workplace, ): ?int
+    public function getDistancesBeetweenTwoGpsPoints(Property $property, Workplace $workplace, ): ?int
     {
 
         $response = $this->client->request(
             'GET',
-            self ::ROUTING_API_URL.$workplace->getLatitude().','.$workplace->getLongitude().':'.$home->getLatitude().','.$home->getLongitude().'/json?key='.$_ENV['TOMTOM_API_KEY']
+            self ::ROUTING_API_URL.$workplace->getLatitude().','.$workplace->getLongitude().':'.$property->getLatitude().','.$property->getLongitude().'/json?key='.$_ENV['TOMTOM_API_KEY']
         );
 
         $array_reponse = $response->toArray();

@@ -4,19 +4,19 @@ namespace App\Service;
 
 use App\Entity\ExchangeStatus;
 use App\Entity\HomeEquipment;
-use App\Entity\HomeType;
+use App\Entity\PropertyType;
 use App\Entity\NotationCriteria;
 use App\Repository\ExchangeStatusRepository;
-use App\Repository\HomeTypeRepository;
+use App\Repository\PropertyTypeRepository;
 use App\Repository\NotationCriteriaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class HomeTypeService
+class PropertyTypeService
 {
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private HomeTypeRepository $homeTypeRepository,
+        private PropertyTypeRepository $PropertyTypeRepository,
     )
     {
     }
@@ -37,11 +37,11 @@ class HomeTypeService
 
         foreach ($exchangeLists as $equipmentData) {
             // Vérifie si l'équipement existe déjà dans la base de données
-            $existingEquipment = $this->homeTypeRepository->findOneBy(['name' => $equipmentData]);
+            $existingEquipment = $this->PropertyTypeRepository->findOneBy(['name' => $equipmentData]);
 
             // Si l'équipement n'existe pas, on le crée
             if (!$existingEquipment) {
-                $newEquipment = new HomeType();
+                $newEquipment = new PropertyType();
                 $newEquipment->setName($equipmentData);
 
                 $this->entityManager->persist($newEquipment);

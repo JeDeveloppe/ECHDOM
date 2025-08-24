@@ -18,7 +18,7 @@ class Photo
 
     #[ORM\ManyToOne(inversedBy: 'photos')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Home $home = null;
+    private ?Property $home = null;
 
     public function getId(): ?int
     {
@@ -37,12 +37,12 @@ class Photo
         return $this;
     }
 
-    public function getHome(): ?Home
+    public function getProperty(): ?Property
     {
         return $this->home;
     }
 
-    public function setHome(?Home $home): static
+    public function setHome(?Property $home): static
     {
         $this->home = $home;
 

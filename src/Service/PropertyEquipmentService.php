@@ -2,15 +2,15 @@
 
 namespace App\Service;
 
-use App\Entity\HomeEquipment;
-use App\Repository\HomeEquipmentRepository;
+use App\Entity\PropertyEquipment;
+use App\Repository\PropertyEquipmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class HomeEquipmentService
+class PropertyEquipmentService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private HomeEquipmentRepository $homeEquipmentRepository
+        private PropertyEquipmentRepository $propertyEquipmentRepository
     )
     {
     }
@@ -42,11 +42,11 @@ class HomeEquipmentService
 
         foreach ($equipmentList as $equipmentData) {
             // Vérifie si l'équipement existe déjà dans la base de données
-            $existingEquipment = $this->homeEquipmentRepository->findOneBy(['name' => $equipmentData['name']]);
+            $existingEquipment = $this->propertyEquipmentRepository->findOneBy(['name' => $equipmentData['name']]);
 
             // Si l'équipement n'existe pas, on le crée
             if (!$existingEquipment) {
-                $newEquipment = new HomeEquipment();
+                $newEquipment = new PropertyEquipment();
                 $newEquipment->setName($equipmentData['name']);
                 $newEquipment->setLogo($equipmentData['logo']);
 

@@ -4,11 +4,11 @@ namespace App\Command;
 
 use App\Service\ExchangeStatusService;
 use App\Service\FloorLevelService;
-use App\Service\HomeEquipmentService;
-use App\Service\HomeRegulationsAndRestrictionsService;
-use App\Service\HomeTypeOfParkingAndGarageService;
-use App\Service\HomeTypeService;
+use App\Service\PropertyTypeOfParkingAndGarageService;
+use App\Service\PropertyTypeService;
 use App\Service\NotationCriteriaService;
+use App\Service\PropertyEquipmentService;
+use App\Service\PropertyRegulationsAndRestrictionsService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,13 +22,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class InitApp extends Command
 {
     public function __construct(
-        private HomeEquipmentService $homeEquipmentService,
-        private HomeRegulationsAndRestrictionsService $homeRegulationsAndRestrictionsService,
+        private PropertyEquipmentService $propertyEquipmentService,
+        private PropertyRegulationsAndRestrictionsService $propertyRegulationsAndRestrictionsService,
         private ExchangeStatusService $exchangeStatusService,
         private NotationCriteriaService $notationCriteriaService,
-        private HomeTypeService $homeTypeService,
+        private PropertyTypeService $PropertyTypeService,
         private FloorLevelService $floorLevelService, // <-- Ajout du service FloorLevelService
-        private HomeTypeOfParkingAndGarageService $homeTypeOfParkingAndGarageService // <-- Ajout du service HomeTypeOfParkingAndGarageService
+        private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService // <-- Ajout du service PropertyTypeOfParkingAndGarageService
     )
     {
          parent::__construct();
@@ -40,11 +40,11 @@ class InitApp extends Command
 
         // Appelle le service pour initialiser la base de données
         $io->section('Initialisation des équipements de maison');
-        $this->homeEquipmentService->initialize();
+        $this->propertyEquipmentService->initialize();
         $io->success('Initialisation des équipements de maison terminée avec succès.');
 
         $io->section('Initialisation des règles et restrictions de maison');
-        $this->homeRegulationsAndRestrictionsService->initialize();
+        $this->propertyRegulationsAndRestrictionsService->initialize();
         $io->success('Initialisation des règles et restrictions de maison terminée avec succès.');
 
         $io->section('Initialisation des status d\'échange');
@@ -56,7 +56,7 @@ class InitApp extends Command
         $io->success('Initialisation des critères de notation terminée avec succès.');
 
         $io->section('Initialisation des types de maison');
-        $this->homeTypeService->initialize();
+        $this->PropertyTypeService->initialize();
         $io->success('Initialisation des types de maison terminée avec succès.');
 
         $io->section('Initialisation des niveaux de sol');
@@ -64,7 +64,7 @@ class InitApp extends Command
         $io->success('Initialisation des niveaux de sol terminée avec succès.');
 
         $io->section('Initialisation des types de parking et garage');
-        $this->homeTypeOfParkingAndGarageService->initialize(); // <-- Appel de la méthode pour initialiser les types de parking et garage
+        $this->PropertyTypeOfParkingAndGarageService->initialize(); // <-- Appel de la méthode pour initialiser les types de parking et garage
         $io->success('Initialisation des types de parking et garage terminée avec succès.');
 
         $io->success('Iniatialisation fait avec succès.');

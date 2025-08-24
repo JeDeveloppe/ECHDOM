@@ -1,6 +1,6 @@
 {# member/components/_my_property_in_exchange_tab_availbilities.html.twig #}
 
-{% form_theme availabilityForm 'bootstrap_5_layout.html.twig' %}
+
 
 {# Définition des noms de mois et de jours en français #}
 {% set monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai','Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] %}
@@ -9,42 +9,15 @@
 {# --- Affichage conditionnel du formulaire et des disponibilités --- #}
 
 {# Cas 1 : Aucune disponibilité enregistrée, le formulaire est affiché en haut #}
-{% if home.homeAvailabilities is empty %}
+{% if property.propertyAvailabilities is empty %}
+
     <h3 class="fw-bold text-primary mb-4">Enregistrer une nouvelle disponibilité</h3>
     <p class="text-muted">
         Il n'y a aucune disponibilité enregistrée pour le moment.
         Utilisez le formulaire ci-dessous pour ajouter vos premières dates.
     </p>
-    {{ form_start(availabilityForm, {'attr': {'id': 'availability-form'}}) }}
-    <div class="row">
-        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.startAt) }}</div>
-        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.endAt) }}</div>
-    </div>
     
-    {# Section avec le texte explicatif mis à jour #}
-    <div class="mb-4">
-        {{ form_label(availabilityForm.weeklyDays) }}
-        <div class="card p-3 bg-light mb-3">
-            <h6 class="card-title fw-bold text-dark">Fonctionnement des disponibilités</h6>
-            <p class="card-text text-muted small">
-                En cochant un ou plusieurs jours de la semaine, vous définissez une disponibilité récurrente. La période que vous indiquez ci-dessus servira à déterminer la plage de temps exacte pour ces jours.
-                <br>
-                <br>
-                <span class="fw-semibold">Par exemple :</span> Si vous cochez <span class="fw-semibold">Lundi</span> et que vous définissez une période allant du <span class="fw-semibold">1er </span> au <span class="fw-semibold">25 du mois</span>, votre bien sera marqué comme disponible <span class="fw-semibold">chaque lundi</span> dès {{ app.request.server.get('HOME_AVAILABILITY_START_HOUR') }} jusqu'au lendemain à {{ app.request.server.get('HOME_AVAILABILITY_END_HOUR') }}, sur toute la période choisie.
-            </p>
-        </div>
-        <div class="d-flex flex-wrap justify-content-start">
-            {% for dayField in availabilityForm.weeklyDays %}
-                <div class="form-check form-check-inline me-3 mb-2">
-                    {{ form_widget(dayField) }}
-                    {{ form_label(dayField) }}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    {{ form_rest(availabilityForm) }}
-    <button type="submit" class="btn btn-primary mt-4">Enregistrer les disponibilités</button>
-    {{ form_end(availabilityForm) }}
+    {% include "member/components/_formAddAvailabilities.html.twig" %}
 
 {% else %}
 
@@ -56,7 +29,7 @@
         {% set currentMonth = '' %}
         {% set slugCount = 0 %}
         
-        {% for availability in home.homeAvailabilities %}
+        {% for availability in home.propertyAvailabilities %}
             {% set newMonth = monthNames[availability.startAt|date('n') - 1] ~ ' ' ~ availability.startAt|date('Y') %}
             {% if newMonth != currentMonth %}
                 {% if not loop.first %}
@@ -101,40 +74,8 @@
     
     <hr class="my-5">
     
-    <h3 class="fw-bold text-primary mb-4">Enregistrer de nouvelles disponibilités</h3>
-    <p class="text-muted">
-        Utilisez le formulaire ci-dessous pour ajouter de nouvelles disponibilités.
-    </p>
-    {{ form_start(availabilityForm, {'attr': {'id': 'availability-form'}}) }}
-    <div class="row">
-        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.startAt) }}</div>
-        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.endAt) }}</div>
-    </div>
-    
-    {# Section avec le texte explicatif mis à jour #}
-    <div class="mb-4">
-        {{ form_label(availabilityForm.weeklyDays) }}
-        <div class="card p-3 bg-light mb-3">
-            <h6 class="card-title fw-bold text-dark">Fonctionnement des disponibilités</h6>
-            <p class="card-text text-muted small">
-                En cochant un ou plusieurs jours de la semaine, vous définissez une disponibilité récurrente. La période que vous indiquez ci-dessus servira à déterminer la plage de temps exacte pour ces jours.
-                <br>
-                <br>
-                <span class="fw-semibold">Par exemple :</span> Si vous cochez <span class="fw-semibold">Lundi</span> et que vous définissez une période allant du <span class="fw-semibold">1er </span> au <span class="fw-semibold">25 du mois</span>, votre bien sera marqué comme disponible <span class="fw-semibold">chaque lundi</span> dès {{ app.request.server.get('HOME_AVAILABILITY_START_HOUR') }} jusqu'au lendemain à {{ app.request.server.get('HOME_AVAILABILITY_END_HOUR') }}, sur toute la période choisie.
-            </p>
-        </div>
-        <div class="d-flex flex-wrap justify-content-start">
-            {% for dayField in availabilityForm.weeklyDays %}
-                <div class="form-check form-check-inline me-3 mb-2">
-                    {{ form_widget(dayField) }}
-                    {{ form_label(dayField) }}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    {{ form_rest(availabilityForm) }}
-    <button type="submit" class="btn btn-primary mt-4">Enregistrer les disponibilités</button>
-    {{ form_end(availabilityForm) }}
+    {% include "member/components/_formAddAvailabilities.html.twig" %}
+  
 {% endif %}
 
 {# Importation des fichiers CSS et JS de Flatpickr #}

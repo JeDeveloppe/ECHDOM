@@ -4,7 +4,7 @@ namespace App\Controller\Site;
 
 use App\Service\MapsService;
 use App\Form\SearchHomesType;
-use App\Repository\HomeRepository;
+use App\Repository\PropertyRepository;
 use App\Service\LengthAndTimeTravelService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,13 +14,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class HomeController extends AbstractController
+final class PropertyController extends AbstractController
 {
     public function __construct(
         private  LengthAndTimeTravelService $lengthAndTimeTravelService,
         private Security $security,
         private MapsService $mapsService,
-        private HomeRepository $homeRepository
+        private PropertyRepository $propertyRepository
     )
     {
     }
@@ -42,7 +42,7 @@ final class HomeController extends AbstractController
 
         //?on calcule le temps de trajet entre le lieu de travail et la maison de l'utilisateur
         $timeBetweenmMyHomeAndMyWorkplace = $this->lengthAndTimeTravelService->getDistancesBeetweenTwoGpsPoints(
-            $user->getHomes()->first(),
+            $user->getProperties()->first(),
             $workplaces->first()
         );
 
@@ -71,7 +71,7 @@ final class HomeController extends AbstractController
             foreach($homesNearMyWorkplace as $home){
                 $map = $this->mapsService->generateMiniMapWithOneTypeOfPlace($home, 'homes');
                 //?on ajoute le lieu de résidence de l'utilisateur à la carte
-                $map = $this->mapsService->addMarkerToMap($map, $user->getHomes()->first(), 'homes', 'warning');
+                $map = $this->mapsService->addMarkerToMap($map, $user->getProperties()->first(), 'homes', 'warning');
                 //?on ajoute le lieu de travail de l'utilisateur à la carte
                 $map = $this->mapsService->addMarkerToMap($map, $user->getWorkplaces()->first(), 'workplaces', 'danger');
                 $homes[] = [
@@ -104,9 +104,9 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/api/home/{id}', name: 'api_home_details', methods: ['GET'])]
-    public function getHomeDetails(int $id, HomeRepository $homeRepository, SerializerInterface $serializer): JsonResponse
+    public function getPropertyDetails(int $id, PropertyRepository $propertyRepository, SerializerInterface $serializer): JsonResponse
     {
-        $home = $homeRepository->find($id);
+        $home = $propertyRepository->find($id);
 
         if (!$home) {
             return new JsonResponse(['message' => 'Logement non trouvé'], JsonResponse::HTTP_NOT_FOUND);

@@ -2,28 +2,28 @@
 
 namespace App\Service;
 
-use App\Entity\Home;
-use App\Entity\HomeAvailability;
-use App\Repository\HomeAvailabilityRepository;
+use App\Entity\Property;
+use App\Entity\PropertyAvailability;
+use App\Repository\PropertyAvailabilityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
 use DateTimeZone;
 
-class HomeAvailabilityService
+class PropertyAvailabilityService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly HomeAvailabilityRepository $homeAvailabilityRepository
+        private readonly PropertyAvailabilityRepository $propertyAvailabilityRepository,
     ) {
     }
 
-    public function handleAvailability(Home $home, DateTimeImmutable $startAt, DateTimeImmutable $endAt, array $weeklyDays): void
+    public function handleAvailability(Property $property, DateTimeImmutable $startAt, DateTimeImmutable $endAt, array $weeklyDays): void
     {
         // 1. Récupérer toutes les disponibilités existantes pour la période en une seule requête
-        $existingAvailabilities = $this->homeAvailabilityRepository->findAvailabilitiesForHomeAndPeriod(
-            $home,
+        $existingAvailabilities = $this->propertyAvailabilityRepository->findAvailabilitiesForHomeAndPeriod(
+            $property,
             $startAt,
             $endAt
         );
@@ -62,8 +62,8 @@ class HomeAvailabilityService
                     $existingAvailability->setEndAt($endOfDay);
                 } else {
                     // Créer une nouvelle disponibilité
-                    $newAvailability = new HomeAvailability();
-                    $newAvailability->setHome($home); 
+                    $newAvailability = new PropertyAvailability();
+                    $newAvailability->setHome($property); 
                     $newAvailability->setCreatedAt($now);
                     $newAvailability->setStartAt($startOfDay);
                     $newAvailability->setEndAt($endOfDay);

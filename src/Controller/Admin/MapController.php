@@ -2,18 +2,18 @@
 
 namespace App\Controller\Admin;
 
-use App\Repository\HomeRepository;
-use App\Repository\WorkplaceRepository;
 use App\Service\MapsService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\PropertyRepository;
+use App\Repository\WorkplaceRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class MapController extends AbstractController
 {
     public function __construct(
         private WorkplaceRepository $workplaceRepository,
-        private HomeRepository $homeRepository,
+        private PropertyRepository $propertyRepository,
         private MapsService $mapsService,
     )
     {
@@ -34,7 +34,7 @@ final class MapController extends AbstractController
     #[Route('admin/maps/all-homes', name: 'admin_map_all_homes')]
     public function mapsAllHomes(): Response
     {
-        $homes = $this->homeRepository->findAll();
+        $homes = $this->propertyRepository->findAll();
         $map = $this->mapsService->generateMapWithAllDatabaseObjects($homes,"homes");
 
         return $this->render('admin/map/map_all_places.html.twig', [

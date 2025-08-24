@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\HomeType;
+use App\Entity\PropertyEquipment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<HomeType>
+ * @extends ServiceEntityRepository<HomeEquipment>
  */
-class HomeTypeRepository extends ServiceEntityRepository
+class PropertyEquipmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, HomeType::class);
+        parent::__construct($registry, PropertyEquipment::class);
     }
 
     //    /**
-    //     * @return HomeType[] Returns an array of HomeType objects
+    //     * @return HomeEquipment[] Returns an array of HomeEquipment objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class HomeTypeRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?HomeType
+    //    public function findOneBySomeField($value): ?HomeEquipment
     //    {
     //        return $this->createQueryBuilder('h')
     //            ->andWhere('h.exampleField = :val')

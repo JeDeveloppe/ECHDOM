@@ -10,6 +10,14 @@
     <div class="container my-5 content-offset">
         <h1 class="text-center mb-5">Mes biens à l'échange</h1>
 
+        <div class="row">
+            <div class="col-12 text-end mb-4">
+                <a href="{{ path('member_new_property') }}" class="btn btn-success btn-lg rounded-pill shadow px-4">
+                    <i class="fas fa-plus me-2"></i> Ajouter un nouveau bien
+                </a>
+            </div>
+        </div>
+
         {% if homes is not empty %}
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for home in homes %}

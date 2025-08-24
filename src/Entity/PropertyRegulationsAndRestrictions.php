@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\HomeRegulationsAndRestrictionsRepository;
+use App\Repository\PropertyRegulationsAndRestrictionsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HomeRegulationsAndRestrictionsRepository::class)]
-class HomeRegulationsAndRestrictions
+#[ORM\Entity(repositoryClass: PropertyRegulationsAndRestrictionsRepository::class)]
+class PropertyRegulationsAndRestrictions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,12 +21,12 @@ class HomeRegulationsAndRestrictions
     /**
      * @var Collection<int, Home>
      */
-    #[ORM\ManyToMany(targetEntity: Home::class, mappedBy: 'rules')]
-    private Collection $homes;
+    #[ORM\ManyToMany(targetEntity: Property::class, mappedBy: 'rules')]
+    private Collection $properties;
 
     public function __construct()
     {
-        $this->homes = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,25 +49,25 @@ class HomeRegulationsAndRestrictions
     /**
      * @return Collection<int, Home>
      */
-    public function getHomes(): Collection
+    public function getProperties(): Collection
     {
-        return $this->homes;
+        return $this->properties;
     }
 
-    public function addHome(Home $home): static
+    public function addProperty(Property $property): static
     {
-        if (!$this->homes->contains($home)) {
-            $this->homes->add($home);
-            $home->addRule($this);
+        if (!$this->properties->contains($property)) {
+            $this->properties->add($property);
+            $property->addRule($this);
         }
 
         return $this;
     }
 
-    public function removeHome(Home $home): static
+    public function removeHome(Property $property): static
     {
-        if ($this->homes->removeElement($home)) {
-            $home->removeRule($this);
+        if ($this->properties->removeElement($property)) {
+            $property->removeRule($this);
         }
 
         return $this;

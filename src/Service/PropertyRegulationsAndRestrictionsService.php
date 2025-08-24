@@ -2,16 +2,16 @@
 
 namespace App\Service;
 
-use App\Entity\HomeRegulationsAndRestrictions;
-use App\Repository\HomeRegulationsAndRestrictionsRepository;
+use App\Entity\PropertyRegulationsAndRestrictions;
+use App\Repository\PropertyRegulationsAndRestrictionsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class HomeRegulationsAndRestrictionsService
+class PropertyRegulationsAndRestrictionsService
 {
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private HomeRegulationsAndRestrictionsRepository $homeRegulationsAndRestrictionsRepository
+        private PropertyRegulationsAndRestrictionsRepository $propertyRegulationsAndRestrictionsRepository
     )
     {
     }
@@ -29,10 +29,10 @@ class HomeRegulationsAndRestrictionsService
         ];
 
         foreach ($homeRegulationsAndRestrictionsList as $regulationData) {
-            $existingRegulation = $this->homeRegulationsAndRestrictionsRepository->findOneBy(['name' => $regulationData]);
+            $existingRegulation = $this->propertyRegulationsAndRestrictionsRepository->findOneBy(['name' => $regulationData]);
 
             if (!$existingRegulation) {
-                $newRegulation = new HomeRegulationsAndRestrictions();
+                $newRegulation = new PropertyRegulationsAndRestrictions();
                 $newRegulation->setName($regulationData);
                 $this->entityManager->persist($newRegulation);
             }

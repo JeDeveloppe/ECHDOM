@@ -2,21 +2,21 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Home;
+use App\Entity\Property;
 use App\Entity\User;
 use App\Entity\Workplace;
 use App\Repository\FloorLevelRepository;
-use App\Repository\HomeEquipmentRepository;
-use App\Repository\HomeTypeOfParkingAndGarageRepository;
-use App\Repository\HomeTypeRepository;
+use App\Repository\PropertyEquipmentRepository;
+use App\Repository\PropertyTypeOfParkingAndGarageRepository;
+use App\Repository\PropertyTypeRepository;
 use App\Service\ExchangeStatusService;
 use App\Service\FloorLevelService;
 use App\Service\GeocodingService;
-use App\Service\HomeEquipmentService;
-use App\Service\HomeRegulationsAndRestrictionsService;
-use App\Service\HomeTypeOfParkingAndGarageService;
-use App\Service\HomeTypeService;
+use App\Service\PropertyTypeOfParkingAndGarageService;
+use App\Service\PropertyTypeService;
 use App\Service\NotationCriteriaService;
+use App\Service\PropertyEquipmentService;
+use App\Service\PropertyRegulationsAndRestrictionsService;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -30,15 +30,15 @@ class AppFixtures extends Fixture
         private UserPasswordHasherInterface $userPasswordHasher,
         private FloorLevelService $floorLevelService,
         private FloorLevelRepository $floorLevelRepository, // <-- Ajout du repository FloorLevelRepository
-        private HomeTypeService $homeTypeService, // <-- Ajout du service HomeTypeService
-        private HomeTypeRepository $homeTypeRepository, // <-- Ajout du repository HomeTypeRepository
+        private PropertyTypeService $PropertyTypeService, // <-- Ajout du service PropertyTypeService
+        private PropertyTypeRepository $PropertyTypeRepository, // <-- Ajout du repository PropertyTypeRepository
         private ExchangeStatusService $exchangeStatusService, // <-- Ajout du service ExchangeStatusService
-        private HomeRegulationsAndRestrictionsService $homeRegulationsAndRestrictionsService, // <-- Ajout du service HomeRegulationsAndRestrictionsService
+        private PropertyRegulationsAndRestrictionsService $propertyRegulationsAndRestrictionsService, // <-- Ajout du service HomeRegulationsAndRestrictionsService
         private NotationCriteriaService $notationCriteriaService, // <-- Ajout du service Notation
-        private HomeEquipmentService $homeEquipmentService, // <-- Ajout du service HomeEquipmentService
-        private HomeEquipmentRepository $homeEquipmentRepository, // <-- Ajout du repository HomeEquipmentRepository
-        private HomeTypeOfParkingAndGarageService $homeTypeOfParkingAndGarageService, // <-- Ajout du service HomeTypeOfParkingAndGarageService
-        private HomeTypeOfParkingAndGarageRepository $homeTypeOfParkingAndGarageRepository // <-- Ajout du repository HomeTypeOfParkingAndGarageRepository
+        private PropertyEquipmentService $propertyEquipmentService, // <-- Ajout du service HomeEquipmentService
+        private PropertyEquipmentRepository $propertyEquipmentRepository, // <-- Ajout du repository HomeEquipmentRepository
+        private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService, // <-- Ajout du service PropertyTypeOfParkingAndGarageService
+        private PropertyTypeOfParkingAndGarageRepository $PropertyTypeOfParkingAndGarageRepository // <-- Ajout du repository PropertyTypeOfParkingAndGarageRepository
     )
     {
     }
@@ -49,12 +49,12 @@ class AppFixtures extends Fixture
         //?quelques services sont nécessaires pour initialiser les données
         //?on initialise les niveaux de sol
         $this->floorLevelService->initialize();
-        $this->homeTypeService->initialize();
+        $this->PropertyTypeService->initialize();
         $this->exchangeStatusService->initialize();
-        $this->homeRegulationsAndRestrictionsService->initialize();
+        $this->propertyRegulationsAndRestrictionsService->initialize();
         $this->notationCriteriaService->initialize();
-        $this->homeEquipmentService->initialize();
-        $this->homeTypeOfParkingAndGarageService->initialize();
+        $this->propertyEquipmentService->initialize();
+        $this->PropertyTypeOfParkingAndGarageService->initialize();
 
 
         //?on charge la librairie faker pour générer des données aléatoires
@@ -105,64 +105,64 @@ class AppFixtures extends Fixture
             $user->addWorkplace($workplace);
 
             //?on géocode l'adresse de la résidence
-            $homeAddress = $this->geocodingService->getRandomAddress("fr");
-            $homeCoordinates = $this->geocodingService->geocodeAddress($homeAddress['address']);
+            $propertyAddress = $this->geocodingService->getRandomAddress("fr");
+            $propertyCoordinates = $this->geocodingService->geocodeAddress($propertyAddress['address']);
 
             //?on récupère un niveau de sol aléatoire
             $floorLevels = $this->floorLevelRepository->findAll();
             $randomFloorLevel = array_rand($floorLevels);
 
             //?on récupere un type de maison aléatoire
-            $homeTypes = $this->homeTypeRepository->findAll();
-            $randomHomeType = array_rand($homeTypes);
+            $PropertyTypes = $this->PropertyTypeRepository->findAll();
+            $randomPropertyType = array_rand($PropertyTypes);
 
             //?on crée le lieu de résidence
-            $home = new Home();
-            $home->setAddress($homeCoordinates['address']);
-            $home->setLatitude($homeCoordinates['y']);
-            $home->setLongitude($homeCoordinates['x']);
-            $home->setOwner($user); 
-            $home->setDescription($faker->text(200));
-            $home->setSurface($faker->numberBetween(20, 200));
-            $home->setRooms($faker->numberBetween(1, 10));
-            $home->setBedrooms($faker->numberBetween(1, 5));
-            $home->setBathrooms($faker->numberBetween(1, 5));
-            $home->setFloor($floorLevels[$randomFloorLevel]);
-            $home->setType($homeTypes[$randomHomeType]);
-            $home->setHasElevator($faker->boolean);
-            $home->setHasBalcony($faker->boolean);
-            $home->setOtherRules($faker->text(200));
-            $home->setHasGarage($faker->boolean(30)); // 30% de chances d'avoir un garage
-            $home->setHasParking($faker->boolean(50)); // 50% de chances d'avoir un parking
+            $property = new Property();
+            $property->setAddress($propertyCoordinates['address']);
+            $property->setLatitude($propertyCoordinates['y']);
+            $property->setLongitude($propertyCoordinates['x']);
+            $property->setOwner($user); 
+            $property->setDescription($faker->text(200));
+            $property->setSurface($faker->numberBetween(20, 200));
+            $property->setRooms($faker->numberBetween(1, 10));
+            $property->setBedrooms($faker->numberBetween(1, 5));
+            $property->setBathrooms($faker->numberBetween(1, 5));
+            $property->setFloor($floorLevels[$randomFloorLevel]);
+            $property->setType($PropertyTypes[$randomPropertyType]);
+            $property->setHasElevator($faker->boolean);
+            $property->setHasBalcony($faker->boolean);
+            $property->setOtherRules($faker->text(200));
+            $property->setHasGarage($faker->boolean(30)); // 30% de chances d'avoir un garage
+            $property->setHasParking($faker->boolean(50)); // 50% de chances d'avoir un parking
             //?on renseigne les équipements de la maison
-            $equipments = $this->homeEquipmentRepository->findAll();
+            $equipments = $this->propertyEquipmentRepository->findAll();
             foreach ($equipments as $equipment) {
                 if ($faker->boolean(50)) { // 50% de chance d'ajouter l'équipement
-                    $home->addEquipment($equipment);
+                    $property->addEquipment($equipment);
                 }
             }
             //?on renseigne les types de parking et garage de la maison
-            $typeOfParkingAndGarages = $this->homeTypeOfParkingAndGarageRepository->findAll();
-            if($home->hasGarage()) {
+            $typeOfParkingAndGarages = $this->PropertyTypeOfParkingAndGarageRepository->findAll();
+            if($property->hasGarage()) {
                 foreach ($typeOfParkingAndGarages as $typeOfParkingAndGarage) {
                     if ($typeOfParkingAndGarage->isForGarageOnly() && $faker->boolean(50)) { // 50% de chance d'ajouter le type de garage
-                        $home->setTypeOfGarage($typeOfParkingAndGarage);
+                        $property->setTypeOfGarage($typeOfParkingAndGarage);
                     }
                 }
             }
-            if($home->hasParking()) {
+            if($property->hasParking()) {
                 foreach ($typeOfParkingAndGarages as $typeOfParkingAndGarage) {
                     if ($typeOfParkingAndGarage->isForParkingOnly() && $faker->boolean(50)) { // 50% de chance d'ajouter le type de parking
-                        $home->setTypeOfParking($typeOfParkingAndGarage);
+                        $property->setTypeOfParking($typeOfParkingAndGarage);
                     }
                 }
             }
 
             //?on ajoute le lieu de résidence à l'utilisateur
-            $user->addHome($home);
+            $user->addProperty($property);
 
             //?on persiste l'utilisateur et son lieu de travail
-            $manager->persist($home);
+            $manager->persist($property);
             $manager->persist($user);
             $manager->persist($workplace);
         }

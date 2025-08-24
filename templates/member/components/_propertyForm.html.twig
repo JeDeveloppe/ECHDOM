@@ -41,9 +41,11 @@
 
     <h5 class="fw-bold text-dark mb-4">Adresse</h5>
     <div class="row g-3 mb-5">
-        <div class="col-12">
-            Lieu actuel: {{ property.address ? property.address : '' | raw }}
-        </div>
+        {% if home is defined %}
+            <div class="col-12">
+                Lieu actuel: {{ home.address ? home.address : '' | raw }}
+            </div>
+        {% endif %}
         <div class="col-12">
         <div class="col-12">
             <div class="position-relative w-100">
