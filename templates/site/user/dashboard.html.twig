@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container my-5 pt-5">
-        <div class="row mb-4 pt-5">
+    <div class="container my-5">
+        <div class="row mb-4">
             <div class="col-12 text-center">
                 <h1 class="fw-bold text-primary display-4">Mon tableau de bord</h1>
                 <p class="lead text-muted">Bienvenue, {{ app.user.firstname }} ! Gérez votre propriété et vos échanges en un coup d'œil.</p>
@@ -59,13 +59,18 @@
                         <div class="bg-primary-subtle text-primary p-3 rounded-circle mb-3">
                             <i class="fa-solid fa-house-chimney-user fa-2x"></i>
                         </div>
-                        <h5 class="card-title fw-semibold text-dark mb-2">Mon bien en échange</h5>
+                        {# s'il y a au moins un bien #}
                         {% if app.user.homes is not empty %}
-                            <p class="card-text text-muted mb-0">{{ app.user.homes.first.address }}</p>
-                            <a href="{{ path('user_my_property_in_exchange') }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Voir les détails</a>
+                            {% set textMyHome = "Mon bien" %}
+                            {% if app.user.homes | length > 1 %}{% set textMyHome = "Mes biens" %}{% endif %}
+                            <h5 class="card-title fw-semibold text-dark mb-2">{{ textMyHome }} en échange</h5>
+                            {% for home in app.user.homes %}
+                                <p class="card-text text-muted mb-0">{{ home.address }}</p>
+                            {% endfor %}
+                            <a href="{{ path('user_homes', ) }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Gérer</a>
                         {% else %}
                             <p class="card-text text-muted fst-italic">Aucun bien proposé</p>
-                            <a href="{{ path('user_my_property_in_exchange') }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Proposer un bien</a>
+                            <a href="{{ path('user_homes') }}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">Proposer un bien</a>
                         {% endif %}
                     </div>
                 </div>

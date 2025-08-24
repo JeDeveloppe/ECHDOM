@@ -14,6 +14,8 @@ use App\Service\GeocodingService;
 use App\Form\UserWorkplaceChoiceType;
 use App\Form\HomeAvailabilityFormType;
 use App\Repository\HomeAvailabilityRepository;
+use App\Repository\HomeRepository;
+use App\Service\HomeAvailabilityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,8 @@ class UserController extends AbstractController
     public function __construct(
         private GeocodingService $geocodingService,
         private EntityManagerInterface $em,
+        private HomeRepository $homeRepository,
+        private HomeAvailabilityService $homeAvailabilityService,
         private HomeAvailabilityRepository $homeAvailabilityRepository
     )
     {
@@ -61,6 +65,16 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/mes-biens', name: '_homes', methods: ['GET'])]
+    public function listUserHomes(): Response
+    {
+        // Récupère la collection de tous les biens immobiliers de l'utilisateur
+        $homes = $this->getUser()->getHomes();
+
+        return $this->render('site/user/list_homes.html.twig', [
+            'homes' => $homes,
+        ]);
+    }
     /**
      * Endpoint API pour la recherche d'adresses avec le service de géocodage.
      * Appelé par le JavaScript pour l'autocomplétion.
@@ -112,12 +126,17 @@ class UserController extends AbstractController
     /**
      * route vers la page du formulaire pour mettre à jour créer un Home
      */
-    #[Route('/mon-bien-a-l-echange', name: '_my_property_in_exchange', methods: ['GET', 'POST'])]
-    public function myPropertyInExchange(Request $request): Response
-    {
-        $home = $this->getUser()->getHomes()->first() ?: new Home();
 
-        $isEditMode = $home->getId() !== null; // Détermine si on est en mode édition
+    #[Route('/mon-bien-a-l-echange/{id}', name: '_my_property_in_exchange', methods: ['GET', 'POST'])]
+    public function myPropertyInExchange(Request $request, int $id): Response
+    {
+        /** @var Home $home */
+        $home = $this->homeRepository->findOneBy(['id' => $id, 'owner' => $this->getUser()]);
+
+        if (!$home) {
+            $this->addFlash('warning', 'Bien immobilier non trouvé.');
+            return $this->redirectToRoute('user_home_list');
+        }
 
         $form = $this->createForm(HomeType::class, $home);
         $form->handleRequest($request);
@@ -125,88 +144,32 @@ class UserController extends AbstractController
         $availabilityForm = $this->createForm(HomeAvailabilityFormType::class);
         $availabilityForm->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-
-            $home->setOwner($this->getUser());
-            if( $home->getTypeOfGarage()->getName() === 'Aucun' ) {
-                $home->setHasGarage(false);
-            }
-            if( $home->getTypeOfParking()->getName() === 'Aucun' ) {
-                $home->setHasParking(false);
-            }
-
-            $this->em->persist($home);
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-
-            $this->addFlash('success', 'Votre bien a été ajouté avec succès !');
+            $this->addFlash('success', 'Les informations du bien ont été mises à jour !');
         }
 
-        if($availabilityForm->isSubmitted() && $availabilityForm->isValid()) {
-            // Récupère les données du formulaire
+        if ($availabilityForm->isSubmitted() && $availabilityForm->isValid()) {
             $startAt = $availabilityForm->get('startAt')->getData();
             $endAt = $availabilityForm->get('endAt')->getData();
             $weeklyDays = $availabilityForm->get('weeklyDays')->getData();
 
-            // S'assure que la date de fin est postérieure ou égale à la date de début
-            if ($startAt > $endAt) {
-                $this->addFlash('error', 'La date de début ne peut pas être postérieure à la date de fin.');
-                return $this->redirectToRoute('_my_property_in_exchange');
-            }
-
-            // Crée un itérateur pour parcourir chaque jour de la période
-            $period = new DatePeriod(
-                $startAt,
-                new DateInterval('P1D'), // Incrémente de 1 jour
-                $endAt->modify('+1 day') // S'arrête à la date de fin incluse
-            );
-
-            // Définit le fuseau horaire pour la France
-            $timezone = new DateTimeZone('Europe/Paris');
-            $now = new \DateTimeImmutable('now', $timezone);
-
-            // Parcourt chaque jour de la période
-            foreach ($period as $date) {
-                // Le format 'N' renvoie le jour de la semaine (1 pour lundi, 7 pour dimanche)
-                $dayOfWeek = (int) $date->format('N');
-
-                // Si le jour de la semaine est dans le tableau des jours cochés
-                if (in_array($dayOfWeek, $weeklyDays)) {
-                    // Crée une NOUVELLE instance de l'entité HomeAvailability pour ce jour
-                    $newAvailability = new HomeAvailability();
-                    $immutableDate = DateTimeImmutable::createFromMutable($date);
-                    
-                    // Définit la date de début avec l'heure à 12:00:00 et le fuseau horaire
-                    $startDateTime = $immutableDate->setTime(12, 0, 0)->setTimezone($timezone);
-                    $newAvailability->setStartAt($startDateTime);
-                    
-                    // Définit la date de fin (pour un seul jour)
-                    $endDateTime = $immutableDate->setTime(23, 59, 59)->setTimezone($timezone);
-                    $newAvailability->setEndAt($endDateTime); 
-                    
-                    // Ajoute l'entité HomeAvailability au Home
-                    $myHome = $this->getUser()->getHomes()->first();
-                    $newAvailability->setHome($myHome); 
-                    $newAvailability->setCreatedAt($now);
-
-                    $this->em->persist($newAvailability);
-                }
-            }
-
-            // Exécute toutes les requêtes d'insertion en une seule transaction
-            $this->em->flush();
+            $startAtImmutable = \DateTimeImmutable::createFromMutable($startAt);
+            $endAtImmutable = \DateTimeImmutable::createFromMutable($endAt);
+            
+            // Appel du service pour gérer la logique de disponibilité
+            $this->homeAvailabilityService->handleAvailability($home, $startAtImmutable, $endAtImmutable, $weeklyDays);
 
             $this->addFlash('success', 'Vos disponibilités ont été enregistrées avec succès !');
 
-            return $this->redirectToRoute('_my_property_in_exchange');
+            return $this->redirectToRoute('user_my_property_in_exchange', ['id' => $home->getId()]);
         }
-
-        $homeAvailabilities = $this->homeAvailabilityRepository->findBy(['home' => $home], ['startAt' => 'ASC']); 
 
         return $this->render('site/user/my_property_in_exchange.html.twig', [
             'form' => $form->createView(),
-            'isEditMode' => $isEditMode,
             'availabilityForm' => $availabilityForm->createView(),
-            'homeAvailabilities' => $homeAvailabilities,
+            'isEditMode' => true,
+            'home' => $home,
         ]);
     }
 

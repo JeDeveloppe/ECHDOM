@@ -1,87 +1,120 @@
 {#
-    Ce fichier est inclus dans edit.html.twig et contient le formulaire
-    pour les disponibilités du bien.
-    Le formulaire est passé à la vue sous la variable 'availabilityForm'.
+Ce template a été revu pour une meilleure expérience utilisateur.
+L'affichage des disponibilités a été simplifié et utilise des listes
+pour réduire le nombre de "cards" et rendre l'interface plus épurée.
 #}
 
 {% form_theme availabilityForm 'bootstrap_5_layout.html.twig' %}
 
-{{ form_start(availabilityForm, {'attr': {'id': 'availability-form'}}) }}
+{# Définition des noms de mois et de jours en français #}
+{% set monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] %}
+{% set dayNames = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] %}
 
-<div class="row">
-    {# Champ de formulaire 'startAt' #}
-    <div class="col-md-6 mb-4">
-        {{ form_row(availabilityForm.startAt) }}
+{# --- Affichage conditionnel du formulaire et des disponibilités --- #}
+
+{# Cas 1 : Aucune disponibilité enregistrée, le formulaire est affiché en haut #}
+{% if home.homeAvailabilities is empty %}
+    <h3 class="fw-bold text-primary mb-4">Enregistrer une nouvelle disponibilité</h3>
+    <p class="text-muted">
+        Il n'y a aucune disponibilité enregistrée pour le moment.
+        Utilisez le formulaire ci-dessous pour ajouter vos premières dates.
+    </p>
+    {{ form_start(availabilityForm, {'attr': {'id': 'availability-form'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.startAt) }}</div>
+        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.endAt) }}</div>
+    </div>
+    <div class="mb-4">
+        {{ form_label(availabilityForm.weeklyDays) }}
+        <div class="d-flex flex-wrap justify-content-start">
+            {% for dayField in availabilityForm.weeklyDays %}
+                <div class="form-check form-check-inline me-3 mb-2">
+                    {{ form_widget(dayField) }}
+                    {{ form_label(dayField) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {{ form_rest(availabilityForm) }}
+    <button type="submit" class="btn btn-primary mt-4">Enregistrer les disponibilités</button>
+    {{ form_end(availabilityForm) }}
+
+{% else %}
+
+{# Cas 2 : Des disponibilités existent, elles sont affichées en premier #}
+    <h3 class="fw-bold text-primary mb-4">Les disponibilités actuelles</h3>
+    <p class="text-muted">Les disponibilités sont organisées par mois. Cliquez sur un mois pour voir les jours disponibles.</p>
+
+    <div class="accordion" id="availabilityAccordion">
+        {% set currentMonth = '' %}
+        {% set slugCount = 0 %}
+        
+        {% for availability in home.homeAvailabilities %}
+            {% set newMonth = monthNames[availability.startAt|date('n') - 1] ~ ' ' ~ availability.startAt|date('Y') %}
+            {% if newMonth != currentMonth %}
+                {% if not loop.first %}
+                    </ul>
+                </div>
+                </div>
+                {% endif %}
+                
+                {% set slugCount = slugCount + 1 %}
+                {% set accordionId = 'collapse-' ~ slugCount %}
+                
+                <div class="accordion-item mb-3 rounded-3 shadow-sm">
+                    <h2 class="accordion-header" id="heading-{{ slugCount }}">
+                        <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#{{ accordionId }}" aria-expanded="false" aria-controls="{{ accordionId }}">
+                            {{ newMonth|capitalize }}
+                        </button>
+                    </h2>
+                    <div id="{{ accordionId }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ slugCount }}" data-bs-parent="#availabilityAccordion">
+                        <ul class="list-group list-group-flush rounded-bottom-3">
+            {% endif %}
+
+            <li class="list-group-item d-flex align-items-center justify-content-between py-3">
+                <div class="flex-grow-1">
+                    {# Affichage du jour de la semaine et du jour du mois #}
+                    {% set dayOfWeek = dayNames[availability.startAt|date('w')] %}
+                    <span class="d-block fw-semibold">{{ dayOfWeek }} {{ availability.startAt|date('d') }}</span>
+                    {# Affichage de la période avec les heures et les dates complètes #}
+                    {% set dayOfWeekFromEndAt = dayNames[availability.endAt|date('w')] %}
+                    <span class="text-muted small">Période concernée => du {{ dayOfWeek }} ({{ availability.startAt|date('d/m/Y') }}) à {{ availability.startAt|date('H:i') }} au {{dayOfWeekFromEndAt}} ({{ availability.endAt|date('d/m/Y') }}) à {{ availability.endAt|date('H:i') }} </span>
+                </div>
+                <span class="badge bg-success text-white py-2 px-3 fw-normal">
+                    Disponible
+                </span>
+            </li>
+            
+            {% set currentMonth = newMonth %}
+        {% endfor %}
+        </ul>
+        </div>
+        </div>
     </div>
     
-    {# Champ de formulaire 'endAt' #}
-    <div class="col-md-6 mb-4">
-        {{ form_row(availabilityForm.endAt) }}
+    <hr class="my-5">
+    
+    <h3 class="fw-bold text-primary mb-4">Enregistrer une nouvelle disponibilité</h3>
+    <p class="text-muted">
+        Utilisez le formulaire ci-dessous pour ajouter de nouvelles disponibilités.
+    </p>
+    {{ form_start(availabilityForm, {'attr': {'id': 'availability-form'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.startAt) }}</div>
+        <div class="col-md-6 mb-4">{{ form_row(availabilityForm.endAt) }}</div>
     </div>
-</div>
-
-{#
-    Champ de formulaire 'weeklyDays' - rendu en tant que cases à cocher
-    Utilisation de flexbox de Bootstrap pour un affichage en ligne avec espacement
-#}
-<div class="mb-4">
-    {{ form_label(availabilityForm.weeklyDays) }}
-    <div class="d-flex flex-wrap justify-content-start">
-        {% for dayField in availabilityForm.weeklyDays %}
-            <div class="form-check form-check-inline me-3 mb-2">
-                {{ form_widget(dayField) }}
-                {{ form_label(dayField) }}
-            </div>
-        {% endfor %}
-    </div>
-</div>
-
-{{ form_rest(availabilityForm) }}
-<button type="submit" class="btn btn-primary mt-4">Enregistrer les disponibilités</button>
-
-{{ form_end(availabilityForm) }}
-
-<hr class="my-5">
-
-{# Affichage des disponibilités existantes #}
-<h3 class="fw-bold text-primary mb-4">Vos disponibilités actuelles</h3>
-
-<div class="container my-5">
-    {% set currentMonth = '' %}
-    {% if homeAvailabilities is not empty %}
-        <p class="text-muted text-center mb-4">
-            Toutes les disponibilités commencent à 12h00 et se terminent à 11h59.
-        </p>
-    {% endif %}
-
-    {% for availability in homeAvailabilities %}
-        {% set newMonth = availability.startAt|date('F Y') %}
-
-        {% if newMonth != currentMonth %}
-            <h4 class="mt-5 mb-3 fw-bold text-primary">
-                {{ newMonth|capitalize }}
-            </h4>
-            {% set currentMonth = newMonth %}
-        {% endif %}
-
-        <div class="card shadow-sm mb-3">
-            <div class="card-body py-2">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="d-block fw-semibold">{{ availability.startAt|date('l d')|capitalize }}</span>
-                        <span class="text-muted">{{ availability.startAt|date('F Y') }}</span>
-                    </div>
-                    <span class="badge bg-success text-white py-2 px-3 fw-normal">
-                        Disponible
-                    </span>
+    <div class="mb-4">
+        {{ form_label(availabilityForm.weeklyDays) }}
+        <div class="d-flex flex-wrap justify-content-start">
+            {% for dayField in availabilityForm.weeklyDays %}
+                <div class="form-check form-check-inline me-3 mb-2">
+                    {{ form_widget(dayField) }}
+                    {{ form_label(dayField) }}
                 </div>
-            </div>
+            {% endfor %}
         </div>
-
-    {% else %}
-        <div class="text-center py-5">
-            <p class="text-muted">Aucune disponibilité enregistrée pour le moment.</p>
-        </div>
-    {% endfor %}
-</div>
-           
+    </div>
+    {{ form_rest(availabilityForm) }}
+    <button type="submit" class="btn btn-primary mt-4">Enregistrer les disponibilités</button>
+    {{ form_end(availabilityForm) }}
+{% endif %}
