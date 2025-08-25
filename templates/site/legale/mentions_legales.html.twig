@@ -1,0 +1,37 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block body %}
+
+    <div class="row g-0 justify-content-around align-items-center my-4">
+        <h1 class="col-12 text-center">Mentions légales</h1>
+        <div class="col-12 small text-center">Date de dernière mise à jour : {{ legales.updatedAt | date('d-m-Y') }}</div>
+    </div>
+
+    <div class="row g-0 py-5 bg-white justify-content-around">
+
+        <div class="col-11 col-md-8 col-xl-7 mb-5">
+            <h4 class="text-purple">Informations légales</h4>
+                <p>
+                    <span class="fw-bolder">Propriétaire du site :</span> {{ legales.companyName }}<br />
+                    <span class="fw-bolder">Contact :</span> {{ legales.emailCompany }}<br />
+                    <span class="fw-bolder">Adresse :</span> {{ legales.streetCompany }} {{ legales.postalCodeCompany }} {{ legales.cityCompany }}<br />
+                    <span class="fw-bolder">Hébergeur du site :</span> {{ legales.hostName }} {{ legales.hostStreet }} {{ legales.hostPostalCode }} {{ legales.hostCity }}<br/>
+                    <span class="fw-bolder">Développement & webmaster :</span> {{ legales.webmasterCompanyName }}<br />
+                    <span class="fw-bolder">Webdesign :</span> {{ legales.webdesignerName }}
+                </p>
+        </div>
+
+        {% for paragraph in paragraphs %}
+
+            <div class="col-11 col-md-8 col-xl-7 mb-3">
+                <h4 class="text-purple">{{ paragraph.title }}</h4>
+                    <p>{{ paragraph.text | raw }}</p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

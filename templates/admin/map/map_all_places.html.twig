@@ -3,8 +3,13 @@
 {% block body %}
     <h1>{{ h1 }}</h1>
    
-    <div class="col-md-6">
+        <div class="row">
         {# The map must have a defined height #}
-        {{ ux_map(map, {style: 'height: 600px;'}) }}
-    </div>
+            {% for map in maps %}
+                <div class="col-md-6">
+                    {{ ux_map(map, {style: 'height: 600px;'}) }}    
+                </div>
+            {% endfor %}
+
+        </div>
 {% endblock %}

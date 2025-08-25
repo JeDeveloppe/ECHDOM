@@ -2,8 +2,10 @@
 
 namespace App\Command;
 
+use App\Repository\LegalInformationRepository;
 use App\Service\ExchangeStatusService;
 use App\Service\FloorLevelService;
+use App\Service\LegalInformationService;
 use App\Service\PropertyTypeOfParkingAndGarageService;
 use App\Service\PropertyTypeService;
 use App\Service\NotationCriteriaService;
@@ -30,7 +32,9 @@ class InitApp extends Command
         private PropertyTypeService $PropertyTypeService,
         private FloorLevelService $floorLevelService, // <-- Ajout du service FloorLevelService
         private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService, // <-- Ajout du service PropertyTypeOfParkingAndGarageService
-        private UserGenderService $userGenderService // <-- Ajout du service UserGenderService
+        private UserGenderService $userGenderService, // <-- Ajout du service UserGenderService
+        private LegalInformationService $legalInformationService, // <-- Ajout du service LegalInformationService
+        private LegalInformationRepository $legalInformationRepository // <-- Ajout du repository LegalInformationRepository
     )
     {
          parent::__construct();
@@ -44,6 +48,10 @@ class InitApp extends Command
         $io->title('Ajout des genres utilisateur');
         $this->userGenderService->initialize();
         $io->success('Ajout des genres utilisateur fait avec succès.');
+
+        $io->title('Création / mise à jour des informations légales');
+        $this->legalInformationService->creationLegalInformation($io);
+        $io->success('Création / mise à jour des informations légales fait avec succès.');
 
         $io->section('Initialisation des équipements de maison');
         $this->propertyEquipmentService->initialize();

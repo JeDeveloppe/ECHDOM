@@ -94,12 +94,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?UserGender $gender = null;
 
+    /**
+     * @var Collection<int, Home>
+     */
+    #[ORM\OneToMany(targetEntity: Home::class, mappedBy: 'owner', orphanRemoval: true)]
+    private Collection $homes;
+
     public function __construct()
     {
         $this->workplaces = new ArrayCollection();
         $this->properties = new ArrayCollection();
         $this->exchangesProposed = new ArrayCollection();
         $this->exchangesReceiver = new ArrayCollection();
+        $this->homes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -441,6 +448,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGender(?UserGender $gender): static
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Home>
+     */
+    public function getHomes(): Collection
+    {
+        return $this->homes;
+    }
+
+    public function addHome(Home $home): static
+    {
+        if (!$this->homes->contains($home)) {
+            $this->homes->add($home);
+            $home->setOwner($this);
+        }
 
         return $this;
     }

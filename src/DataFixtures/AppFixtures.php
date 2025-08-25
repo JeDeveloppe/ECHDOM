@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Property;
 use App\Entity\Workplace;
+use App\Entity\LegalInformation;
 use App\Service\GeocodingService;
 use App\Service\FloorLevelService;
 use App\Service\UserGenderService;
@@ -13,14 +14,19 @@ use App\Service\ExchangeStatusService;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\FloorLevelRepository;
 use App\Repository\UserGenderRepository;
+use App\Service\LegalInformationService;
 use App\Service\NotationCriteriaService;
 use App\Service\PropertyEquipmentService;
 use App\Repository\PropertyTypeRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Repository\LegalInformationRepository;
 use App\Repository\PropertyEquipmentRepository;
+
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use App\Service\PropertyTypeOfParkingAndGarageService;
 use App\Service\PropertyRegulationsAndRestrictionsService;
-
 use App\Repository\PropertyTypeOfParkingAndGarageRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Faker\Factory as FakerFactory; // <-- Ajout de cette ligne pour l'alias
@@ -42,17 +48,21 @@ class AppFixtures extends Fixture
         private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService, // <-- Ajout du service PropertyTypeOfParkingAndGarageService
         private PropertyTypeOfParkingAndGarageRepository $PropertyTypeOfParkingAndGarageRepository, // <-- Ajout du repository PropertyTypeOfParkingAndGarageRepository
         private UserGenderService $userGenderService, // <-- Ajout du service UserGenderService
-        private UserGenderRepository $userGenderRepository // <-- Ajout du repository UserGenderRepository
+        private UserGenderRepository $userGenderRepository, // <-- Ajout du repository UserGenderRepository
+        private LegalInformationRepository $legalInformationRepository, // <-- Ajout du repository LegalInformationRepository
+        private LegalInformationService $legalInformationService // <-- Ajout du service LegalInformationService
     )
     {
     }
 
     public function load(ObjectManager $manager): void
     {
-    
+
+
         //?quelques services sont nécessaires pour initialiser les données
         //?on initialise les niveaux de sol
         $this->userGenderService->initialize();
+        $this->legalInformationService->creationLegalInformation();
         $this->floorLevelService->initialize();
         $this->PropertyTypeService->initialize();
         $this->exchangeStatusService->initialize();
@@ -67,8 +77,12 @@ class AppFixtures extends Fixture
         $faker = FakerFactory::create('fr_FR');
         $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'));
 
+
         //?on crée 50 utilisateurs avec leur lieu de travail, le lieu de résidence
-        for ($i = 0; $i < 20; $i++) {
+        echo "Création des utilisateurs, lieux de travail et lieux de résidence...\n";
+        $numberOfUsers = 20;
+        for ($i = 0; $i < $numberOfUsers; $i++) {
+            echo "Création de l'utilisateur " . ($i + 1) . " sur " . $numberOfUsers . "...\n";
             $user = new User();
 
             //?si c'est le premier utilisateur, on le définit comme admin
@@ -171,10 +185,13 @@ class AppFixtures extends Fixture
             $manager->persist($property);
             $manager->persist($user);
             $manager->persist($workplace);
+            echo "Utilisateur " . ($i + 1) . " créé.\n";
+
         }
 
         //?on flush les données en base de données
         $manager->flush();
+        echo "Toutes les données ont été initialisées avec succès.\n";
 
     }
 

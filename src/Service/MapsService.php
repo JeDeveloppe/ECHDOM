@@ -138,6 +138,8 @@ class MapsService
         switch ($typeOfPlace) {
             case 'workplaces':
                 return Icon::ux('vaadin:workplace', $options);
+            case 'properties':
+                return Icon::ux('ion:bed', $options);
             case 'homes':
                 return Icon::ux('fa:home', $options);
             default:
