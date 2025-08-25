@@ -27,6 +27,11 @@
                         {{ form_errors(registrationForm.plainPassword) }}
                     </div>
                     <div class="form-floating mb-3">
+                        {{ form_widget(registrationForm.gender, {'attr': {'placeholder': 'Genre', 'class': 'form-control'}}) }}
+                        <label for="{{ registrationForm.gender.vars.id }}">Genre</label>
+                        {{ form_errors(registrationForm.gender) }}
+                    </div>
+                    <div class="form-floating mb-3">
                         {{ form_widget(registrationForm.lastName, {'attr': {'placeholder': 'Nom', 'class': 'form-control'}}) }}
                         <label for="{{ registrationForm.lastName.vars.id }}">Nom</label>
                         {{ form_errors(registrationForm.lastName) }}

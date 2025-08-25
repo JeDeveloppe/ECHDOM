@@ -2,26 +2,28 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Property;
 use App\Entity\User;
+use App\Entity\Property;
 use App\Entity\Workplace;
-use App\Repository\FloorLevelRepository;
-use App\Repository\PropertyEquipmentRepository;
-use App\Repository\PropertyTypeOfParkingAndGarageRepository;
-use App\Repository\PropertyTypeRepository;
-use App\Service\ExchangeStatusService;
-use App\Service\FloorLevelService;
 use App\Service\GeocodingService;
-use App\Service\PropertyTypeOfParkingAndGarageService;
+use App\Service\FloorLevelService;
+use App\Service\UserGenderService;
 use App\Service\PropertyTypeService;
+use App\Service\ExchangeStatusService;
+use Doctrine\Persistence\ObjectManager;
+use App\Repository\FloorLevelRepository;
+use App\Repository\UserGenderRepository;
 use App\Service\NotationCriteriaService;
 use App\Service\PropertyEquipmentService;
-use App\Service\PropertyRegulationsAndRestrictionsService;
-use Doctrine\Persistence\ObjectManager;
+use App\Repository\PropertyTypeRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Repository\PropertyEquipmentRepository;
+use App\Service\PropertyTypeOfParkingAndGarageService;
+use App\Service\PropertyRegulationsAndRestrictionsService;
 
-use Faker\Factory as FakerFactory; // <-- Ajout de cette ligne pour l'alias
+use App\Repository\PropertyTypeOfParkingAndGarageRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker\Factory as FakerFactory; // <-- Ajout de cette ligne pour l'alias
 
 class AppFixtures extends Fixture
 {
@@ -38,7 +40,9 @@ class AppFixtures extends Fixture
         private PropertyEquipmentService $propertyEquipmentService, // <-- Ajout du service HomeEquipmentService
         private PropertyEquipmentRepository $propertyEquipmentRepository, // <-- Ajout du repository HomeEquipmentRepository
         private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService, // <-- Ajout du service PropertyTypeOfParkingAndGarageService
-        private PropertyTypeOfParkingAndGarageRepository $PropertyTypeOfParkingAndGarageRepository // <-- Ajout du repository PropertyTypeOfParkingAndGarageRepository
+        private PropertyTypeOfParkingAndGarageRepository $PropertyTypeOfParkingAndGarageRepository, // <-- Ajout du repository PropertyTypeOfParkingAndGarageRepository
+        private UserGenderService $userGenderService, // <-- Ajout du service UserGenderService
+        private UserGenderRepository $userGenderRepository // <-- Ajout du repository UserGenderRepository
     )
     {
     }
@@ -48,6 +52,7 @@ class AppFixtures extends Fixture
     
         //?quelques services sont nécessaires pour initialiser les données
         //?on initialise les niveaux de sol
+        $this->userGenderService->initialize();
         $this->floorLevelService->initialize();
         $this->PropertyTypeService->initialize();
         $this->exchangeStatusService->initialize();
@@ -71,6 +76,7 @@ class AppFixtures extends Fixture
                 $user->setEmail($_ENV['ADMIN_EMAIL']);
                 $user->setRoles(['ROLE_SUPER_ADMIN']);
                 $user->setFirstName('Admin');
+                $user->setGender($this->userGenderRepository->findOneBy(['name' => 'Homme']));
                 $user->setLastName('User');
                 $user->setPhoneNumber($_ENV['ADMIN_PHONE']);
                 $user->setPassword($this->userPasswordHasher->hashPassword($user, $_ENV['ADMIN_PASSWORD']));

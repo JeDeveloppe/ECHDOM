@@ -2,19 +2,19 @@
 
 namespace App\Controller\Site;
 
-use App\Form\PropertyType;
 use DateTimeImmutable;
 use App\Entity\Workplace;
-use App\Service\GeocodingService;
+use App\Form\PropertyType;
 use App\Form\FullAddressType;
-use App\Form\PropertyAvailabilityFormType;
-use App\Repository\PropertyAvailabilityRepository;
+use App\Service\GeocodingService;
 use App\Repository\PropertyRepository;
-use App\Service\PropertyAvailabilityService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Form\PropertyAvailabilityFormType;
+use App\Service\PropertyAvailabilityService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\PropertyAvailabilityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,8 +37,11 @@ class MemberController extends AbstractController
     #[Route('/', name: '_dashboard')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+
         $user = $this->getUser();
-        $workplace = $user->getWorkplaces()->first() ?: new Workplace();
+
+        // L'analyseur est maintenant informé que l'objet est de type App\Entity\User
+        $workplace =  $user->getWorkplaces()->first() ?: new Workplace();
 
         $workplaceForm = $this->createForm(FullAddressType::class, $workplace);
         $workplaceForm->handleRequest($request);
@@ -60,7 +63,7 @@ class MemberController extends AbstractController
         ]);
     }
 
-    #[Route('/nouveau-bien', name: '_new_property', methods: ['GET', 'POST'])]
+    #[Route('/propriete/ajouter', name: '_new_property', methods: ['GET', 'POST'])]
     public function newProperty(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
@@ -78,21 +81,21 @@ class MemberController extends AbstractController
             return $this->redirectToRoute('member_properties');
         }
 
-        return $this->render('member/new_property.html.twig', [
+        return $this->render('member/property/new_property.html.twig', [
             'propertyForm' => $propertyForm->createView(),
             'isEditMode' => false,
             'disable_turbo' => true, // Désactive Turbo pour ce formulaire
         ]);
     }
 
-    #[Route('/mes-biens', name: '_properties', methods: ['GET'])]
-    public function listUserHomes(): Response
+    #[Route('/propriete/liste', name: '_properties', methods: ['GET'])]
+    public function userProperties(): Response
     {
         // Récupère la collection de tous les biens immobiliers de l'utilisateur
-        $homes = $this->getUser()->getProperties();
+        $properties = $this->getUser()->getProperties();
 
-        return $this->render('member/properties.html.twig', [
-            'homes' => $homes,
+        return $this->render('member/property/properties.html.twig', [
+            'properties' => $properties,
         ]);
     }
 
@@ -145,17 +148,17 @@ class MemberController extends AbstractController
     }
 
     /**
-     * route vers la page du formulaire pour mettre à jour créer un Home
+     * route vers la page du formulaire pour mettre à jour créer une proprieté
      */
 
-    #[Route('/mon-bien-a-l-echange/{id}', name: '_my_property_in_exchange', methods: ['GET', 'POST'])]
+    #[Route('/propriete/{id}/details', name: 'property_details', methods: ['GET', 'POST'])]
     public function myPropertyInExchange(Request $request, int $id): Response
     {
-        /** @var Property $property */
+
         $property = $this->propertyRepository->findOneBy(['id' => $id, 'owner' => $this->getUser()]);
 
         if (!$property) {
-            $this->addFlash('warning', 'Bien immobilier non trouvé.');
+            $this->addFlash('warning', 'Propriété non trouvé.');
             return $this->redirectToRoute('member_properties');
         }
 
@@ -167,7 +170,7 @@ class MemberController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', 'Les informations du bien ont été mises à jour !');
+            $this->addFlash('success', 'Les informations ont été mises à jour !');
         }
 
         if ($availabilityForm->isSubmitted() && $availabilityForm->isValid()) {
@@ -183,12 +186,12 @@ class MemberController extends AbstractController
             if ($startAt->format('w') == 5 || $startAt->format('w') == 6 || $startAt->format('w') == 0) {
                 // Ajouter une erreur au formulaire si la date de début est invalide
                 $this->addFlash('error', 'La date de début ne peut pas être un vendredi, un samedi ou un dimanche.');
-                return $this->redirectToRoute('_my_property_in_exchange', ['id' => $property->getId(), '_fragment' => 'availabilities']);
+                return $this->redirectToRoute('property_details', ['id' => $property->getId(), '_fragment' => 'availabilities']);
             }
             if ($endAt->format('w') == 5 || $endAt->format('w') == 6 || $endAt->format('w') == 0) {
                 // Ajouter une erreur au formulaire si la date de fin est invalide
                 $this->addFlash('error', 'La date de fin ne peut pas être un vendredi, un samedi ou un dimanche.');
-                return $this->redirectToRoute('_my_property_in_exchange', ['id' => $property->getId(), '_fragment' => 'availabilities']);
+                return $this->redirectToRoute('property_details', ['id' => $property->getId(), '_fragment' => 'availabilities']);
             }
             // --- FIN DE LA VALIDATION CÔTÉ SERVEUR ---
             
@@ -197,10 +200,9 @@ class MemberController extends AbstractController
 
             $this->addFlash('success', 'Vos disponibilités ont été enregistrées avec succès !');
 
-            return $this->redirectToRoute('member_my_property_in_exchange', ['id' => $property->getId()]);
+            return $this->redirectToRoute('memberproperty_details', ['id' => $property->getId()]);
         }
-
-        return $this->render('member/my_property_in_exchange.html.twig', [
+        return $this->render('member/property/property_details.html.twig', [
             'propertyForm' => $form->createView(),
             'availabilityForm' => $availabilityForm->createView(),
             'isEditMode' => true,

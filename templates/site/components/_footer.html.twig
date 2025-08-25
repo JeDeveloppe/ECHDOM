@@ -1,34 +1,62 @@
-<footer class="row g-0 align-items-center p-4 pb-1 mt-auto" style="background-color: rgba(0, 0, 0, 0.05);">
-	<div class="col-12 col-md-4 text-center text-md-start mb-3 mb-md-0">
-	    {% set startedAt = 2020 %}
-		{% set now = 'now'|date('Y') %}
-		{% if startedAt != now %}
-			{{ startedAt }} - {{ now }}<br/>
-		{% else %}
-			{{ now }}<br/>
-		{% endif %}
-		<div id="blockToDisplayClock" class="clock" onload="showTime()"></div>
-	</div>
-	<div class="col-12 col-md-4 text-center mb-3 mb-md-0">
-		<a href="http://www.linkedin.com/in/wetta-rene-jd" class="mx-2" target="_blank" role="button"><twig:ux:icon name="skill-icons:linkedin" class="footerIconeSize"/></a>
-		<a href="https://github.com/JeDeveloppe" class="mx-2" target="_blank" role="button"><twig:ux:icon name="skill-icons:github-dark" class="footerIconeSize"/></a>
-		<a href="https://www.facebook.com/JeDevloppe" class="mx-2" target="_blank" role="button"><twig:ux:icon name="devicon:facebook" class="footerIconeSize"/></a>
-	</div>
-	<ul class="col-12 col-md-4 nav justify-content-center justify-content-md-end">
-		{# <li class="nav-item">
-			<a class="nav-link text-dark" href="{{ path('site_mentions_legales') }}">Mentions légales</a>
-		</li> #}
-	</ul>
-	<ul class="col-12 mt-2 list-group list-group-horizontal list-unstyled justify-content-start align-items-center" style="font-size: 0.6em;">
-		{# Wrap the text in a list item and align it #}
-		<li class="nav-item d-flex align-items-center me-2">
-			Développé avec:
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-dark" href="https://symfony.com" target="_blank" rel="noopener noreferrer" title="Visitez Symfony"><twig:ux:icon name="skill-icons:symfony-dark" class="footerIconeDevBySize" /></a>
-		</li>
-		<li class="nav-item ms-1">
-			<a class="nav-link text-dark" href="https://www.servbay.com" target="_blank" rel="noopener noreferrer" title="Visitez ServBay - Votre environnement de développement local"><img src="{{ asset('images/icon_blue@64.png') }}" alt="Logo de ServBay" class="footerIconeDevBySize" /></a>
-		</li>
-	</ul>
+<footer class="bg-dark text-white py-5 mt-auto">
+    <div class="container">
+        <div class="row align-items-center justify-content-between text-center text-md-start">
+            <!-- Section Informations et Liens -->
+            <div class="col-12 col-md-auto mb-3 mb-md-0">
+                <div class="d-flex flex-column flex-md-row align-items-center">
+                    <p class="text-sm mb-0 me-md-4">
+                        &copy; WorkAway
+						{% set startedAt = 2025 %}
+						{% set now = 'now'|date('Y') %}
+						{% if startedAt != now %}
+							{{ startedAt }} -
+						{% endif %}
+                    	{{ now }}. Tous droits réservés.
+                    </p>
+                    <ul class="list-unstyled d-flex flex-column flex-md-row mb-0 mt-3 mt-md-0">
+                        <li class="me-md-4">
+                            <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100 transition-opacity">Mentions Légales</a>
+                        </li>
+                        <li class="me-md-4">
+                            <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100 transition-opacity">Politique de Confidentialité</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100 transition-opacity">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Section Icônes de Réseaux Sociaux -->
+            <div class="col-12 col-md-auto">
+                <div class="d-flex justify-content-center justify-content-md-end">
+                    <a href="#" class="text-white mx-2 opacity-75 hover-opacity-100 transition-opacity" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.762s.784-1.762 1.75-1.762 1.75.79 1.75 1.762-.783 1.762-1.75 1.762zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-white mx-2 opacity-75 hover-opacity-100 transition-opacity" aria-label="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.373 3.431 9.352 8.205 10.938.75.143 1.02-.325 1.02-.727 0-.361-.016-1.314-.022-2.515-3.359.731-4.148-1.616-4.148-1.616-.549-1.391-1.339-1.759-1.339-1.759-1.096-.749.083-.734.083-.734 1.21.085 1.847 1.242 1.847 1.242 1.071 1.846 2.809 1.31 3.491.996.109-.775.421-1.31.769-1.613-2.666-.299-5.474-1.333-5.474-5.932 0-1.311.467-2.387 1.232-3.228-.124-.301-.535-1.523.117-3.18 0 0 1.007-.323 3.301 1.23.957-.266 1.983-.399 3.006-.403 1.023.004 2.049.137 3.006.403 2.293-1.553 3.3-1.23 3.3-1.23.653 1.657.242 2.879.118 3.18.767.84 1.231 1.917 1.231 3.228 0 4.59-2.809 5.626-5.485 5.925.433.374.821 1.107.821 2.234 0 1.617-.014 2.92-.014 3.311 0 .405.27.85.998.725 4.774-1.587 8.204-5.565 8.204-10.937 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-white mx-2 opacity-75 hover-opacity-100 transition-opacity" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.958.172-1.333 1.579-1.333h2.421v-3.791c-2.697-.179-3.443-.276-4.664-.204-2.583.149-4.336 1.487-4.478 4.721v2.512z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
+
+<style>
+    /* CSS personnalisé pour les animations de transition */
+    .transition-opacity {
+        transition: opacity 0.2s ease-in-out;
+    }
+    .hover-opacity-100:hover {
+        opacity: 1 !important;
+    }
+</style>

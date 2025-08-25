@@ -63,7 +63,7 @@ class PropertyAvailabilityService
                 } else {
                     // Créer une nouvelle disponibilité
                     $newAvailability = new PropertyAvailability();
-                    $newAvailability->setHome($property); 
+                    $newAvailability->setProperty($property); 
                     $newAvailability->setCreatedAt($now);
                     $newAvailability->setStartAt($startOfDay);
                     $newAvailability->setEndAt($endOfDay);
