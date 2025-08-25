@@ -1,6 +1,7 @@
+{# property_details.html.twig #}
 {% extends 'site/base.html.twig' %}
 
-{% block title %}Mon bien à l'échange{% endblock %}
+{% block title %}Gestion d'une propriété{% endblock %}
 
 {% block nav %}
    {% include "member/components/_nav.html.twig" %}
@@ -11,9 +12,9 @@
         <!-- Titre et sous-titre de la page -->
         <div class="row mb-4">
             <div class="col-12 text-center pt-5">
-                <h1 class="fw-bold text-primary display-4">Gestion d'un bien</h1>
+                <h1 class="fw-bold text-primary display-4">Gestion d'une propriété</h1>
                 <p class="lead text-muted">
-                    Renseignez les informations de votre bien.
+                    Renseignez les informations et les disponibilités de votre propriété.
                 </p>
             </div>
         </div>
@@ -43,12 +44,12 @@
                     
                     <!-- Onglet des informations principales du bien -->
                     <div class="tab-pane fade show active" id="home-info" role="tabpanel" aria-labelledby="home-tab">
-                        {% include "member/components/_my_property_in_exchange_tab_infos.html.twig" %}
+                        {% include "member/property/components/_tab_infos.html.twig" %}
                     </div>
 
                     <!-- Nouvel onglet pour les disponibilités (inclus le formulaire de récurrence) -->
                     <div class="tab-pane fade" id="availability" role="tabpanel" aria-labelledby="availability-tab">
-                        {% include "member/components/_my_property_in_exchange_tab_availbilities.html.twig" with {'availabilityForm': availabilityForm} %}
+                        {% include "member/property/components/_tab_availabilities.html.twig" with {'availabilityForm': availabilityForm} %}
                     </div>
                 </div>
 

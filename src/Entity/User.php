@@ -91,6 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?UserGender $gender = null;
+
     public function __construct()
     {
         $this->workplaces = new ArrayCollection();
@@ -426,6 +429,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getGender(): ?UserGender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?UserGender $gender): static
+    {
+        $this->gender = $gender;
 
         return $this;
     }

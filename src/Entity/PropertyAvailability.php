@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\HomeAvailabilityRepository;
+use App\Repository\PropertyAvailabilityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HomeAvailabilityRepository::class)]
+#[ORM\Entity(repositoryClass: PropertyAvailabilityRepository::class)]
 class PropertyAvailability
 {
     #[ORM\Id]
@@ -72,7 +72,7 @@ class PropertyAvailability
         return $this->property;
     }
 
-    public function setHome(?Property $property): static
+    public function setProperty(?Property $property): static
     {
         $this->property = $property;
 

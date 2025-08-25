@@ -30,7 +30,7 @@ class Property implements GeolocatableInterface
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'homes')]
+    #[ORM\ManyToOne(inversedBy: 'properties')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['property:details'])]
     private ?PropertyType $type = null;
@@ -51,7 +51,7 @@ class Property implements GeolocatableInterface
     #[Groups(['property:details'])]
     private ?int $bathrooms = null;
 
-    #[ORM\ManyToOne(inversedBy: 'homes')]
+    #[ORM\ManyToOne(inversedBy: 'properties')]
     #[Groups(['property:details'])]
     private ?FloorLevel $floor = null;
 
@@ -69,13 +69,13 @@ class Property implements GeolocatableInterface
     /**
      * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'home')]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'property')]
     private Collection $photos;
 
     /**
      * @var Collection<int, HomeEquipment>
      */
-    #[ORM\ManyToMany(targetEntity: PropertyEquipment::class, inversedBy: 'homes')]
+    #[ORM\ManyToMany(targetEntity: PropertyEquipment::class, inversedBy: 'properties')]
     #[Groups(['property:details'])]
     private Collection $equipments;
 
@@ -86,10 +86,10 @@ class Property implements GeolocatableInterface
     /**
      * @var Collection<int, HomeRegulationsAndRestrictions>
      */
-    #[ORM\ManyToMany(targetEntity: PropertyRegulationsAndRestrictions::class, inversedBy: 'homes')]
+    #[ORM\ManyToMany(targetEntity: PropertyRegulationsAndRestrictions::class, inversedBy: 'properties')]
     private Collection $rules;
 
-    #[ORM\ManyToOne(inversedBy: 'homes')]
+    #[ORM\ManyToOne(inversedBy: 'properties')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
@@ -99,16 +99,16 @@ class Property implements GeolocatableInterface
     #[ORM\Column]
     private ?bool $hasParking = false;
 
-    #[ORM\ManyToOne(inversedBy: 'homesWithGarage')]
+    #[ORM\ManyToOne(inversedBy: 'propertiesWithGarage')]
     private ?PropertyTypeOfParkingAndGarage $TypeOfGarage = null;
 
-    #[ORM\ManyToOne(inversedBy: 'homesWithParking')]
+    #[ORM\ManyToOne(inversedBy: 'propertiesWithParking')]
     private ?PropertyTypeOfParkingAndGarage $TypeOfParking = null;
 
     /**
      * @var Collection<int, HomeAvailability>
      */
-    #[ORM\OneToMany(targetEntity: PropertyAvailability::class, mappedBy: 'home', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PropertyAvailability::class, mappedBy: 'property', orphanRemoval: true)]
     private Collection $propertyAvailabilities;
 
     public function __construct()
@@ -280,7 +280,7 @@ class Property implements GeolocatableInterface
     {
         if (!$this->photos->contains($photo)) {
             $this->photos->add($photo);
-            $photo->setHome($this);
+            $photo->setProperty($this);
         }
 
         return $this;
@@ -291,7 +291,7 @@ class Property implements GeolocatableInterface
         if ($this->photos->removeElement($photo)) {
             // set the owning side to null (unless already changed)
             if ($photo->getProperty() === $this) {
-                $photo->setHome(null);
+                $photo->setProperty(null);
             }
         }
 
@@ -441,7 +441,7 @@ class Property implements GeolocatableInterface
     {
         if (!$this->propertyAvailabilities->contains($propertyAvailability)) {
             $this->propertyAvailabilities->add($propertyAvailability);
-            $propertyAvailability->setHome($this);
+            $propertyAvailability->setProperty($this);
         }
 
         return $this;
@@ -452,7 +452,7 @@ class Property implements GeolocatableInterface
         if ($this->propertyAvailabilities->removeElement($propertyAvailability)) {
             // set the owning side to null (unless already changed)
             if ($propertyAvailability->getProperty() === $this) {
-                $propertyAvailability->setHome(null);
+                $propertyAvailability->setProperty(null);
             }
         }
 

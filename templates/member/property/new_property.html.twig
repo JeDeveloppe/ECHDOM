@@ -1,6 +1,6 @@
 {% extends 'site/base.html.twig' %}
 
-{% block title %}Ajouter un bien{% endblock %}
+{% block title %}Ajouter une propriété{% endblock %}
 
 {% block nav %}
     {% include "member/components/_nav.html.twig" %}
@@ -10,16 +10,16 @@
     <div class="container">
         <div class="row mb-4">
             <div class="col-12 text-center pt-5">
-                <h1 class="fw-bold text-primary display-4">Gestion d'un bien</h1>
+                <h1 class="fw-bold text-primary display-4">Gestion d'une propriété</h1>
                 <p class="lead text-muted">
-                    Ajouter un nouveau bien à votre compte.
+                    Ajouter une nouvelle propriété à votre compte.
                 </p>
             </div>
         </div>
         <div class="row mb-4">
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body p-4 p-md-5">
-                    {% include "member/components/_propertyForm.html.twig" %}
+                    {% include "member/property/components/_propertyForm.html.twig" %}
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ use App\Service\PropertyTypeService;
 use App\Service\NotationCriteriaService;
 use App\Service\PropertyEquipmentService;
 use App\Service\PropertyRegulationsAndRestrictionsService;
+use App\Service\UserGenderService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,8 @@ class InitApp extends Command
         private NotationCriteriaService $notationCriteriaService,
         private PropertyTypeService $PropertyTypeService,
         private FloorLevelService $floorLevelService, // <-- Ajout du service FloorLevelService
-        private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService // <-- Ajout du service PropertyTypeOfParkingAndGarageService
+        private PropertyTypeOfParkingAndGarageService $PropertyTypeOfParkingAndGarageService, // <-- Ajout du service PropertyTypeOfParkingAndGarageService
+        private UserGenderService $userGenderService // <-- Ajout du service UserGenderService
     )
     {
          parent::__construct();
@@ -39,6 +41,10 @@ class InitApp extends Command
         $io = new SymfonyStyle($input, $output);
 
         // Appelle le service pour initialiser la base de données
+        $io->title('Ajout des genres utilisateur');
+        $this->userGenderService->initialize();
+        $io->success('Ajout des genres utilisateur fait avec succès.');
+
         $io->section('Initialisation des équipements de maison');
         $this->propertyEquipmentService->initialize();
         $io->success('Initialisation des équipements de maison terminée avec succès.');

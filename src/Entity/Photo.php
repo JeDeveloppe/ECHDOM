@@ -42,7 +42,7 @@ class Photo
         return $this->home;
     }
 
-    public function setHome(?Property $home): static
+    public function setProperty(?Property $home): static
     {
         $this->home = $home;
 
